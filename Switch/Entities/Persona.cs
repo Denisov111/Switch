@@ -9,7 +9,7 @@ namespace Switch
 {
     public class Persona
     {
-        public string Name { get; set; }
+        public string Title { get; set; }
         public string Description { get; set; }
         public string ProfilePath { get; set; }
         public string UserAgent { get; set; }

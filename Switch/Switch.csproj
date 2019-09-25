@@ -72,12 +72,20 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\AddProfiler.cs" />
     <Compile Include="Models\MVVMModelTemplate.cs" />
+    <Compile Include="Models\ProxyMod.cs" />
     <Compile Include="RelayCommand.cs" />
+    <Compile Include="ViewModels\addProfileViewModel.cs" />
     <Compile Include="ViewModels\GlobalViewModel.cs" />
+    <Compile Include="ViewModels\MVVMModelTemplateViewModel.cs" />
+    <Compile Include="Views\AddProfile.xaml.cs">
+      <DependentUpon>AddProfile.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MVVMModelTemplateView.cs" />
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -87,6 +95,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Entities\Persona.cs" />
+    <Page Include="Views\AddProfile.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

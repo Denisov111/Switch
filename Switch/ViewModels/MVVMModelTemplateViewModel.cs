@@ -8,38 +8,28 @@ using System.Runtime.CompilerServices;
 
 namespace Switch.ViewModels
 {
-    public class GlobalViewModel : INotifyPropertyChanged
+    public class MVVMModelTemplateViewModel
     {
-        private Global global;
+        private MVVMModelTemplate template;
 
 
 
 
         public string ProfileLang
         {
-            get { return global.ProfileLang; }
+            get { return template.ProfileLang; }
             set
             {
-                global.ProfileLang = value;
+                template.ProfileLang = value;
                 OnPropertyChanged();
             }
         }
 
-        public string ProxyLang
+        public MVVMModelTemplateViewModel(MVVMModelTemplate template)
         {
-            get { return global.ProxyLang; }
-            set
-            {
-                global.ProxyLang = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public GlobalViewModel(Global global)
-        {
-            this.global = global;
-            OnSendCommand += global.OnSendCommandHandler;
-            OnSendCommandWithObject += global.OnSendCommandWithObjectCommandHandler;
+            this.template = template;
+            OnSendCommand += template.OnSendCommandHandler;
+            OnSendCommandWithObject += template.OnSendCommandWithObjectCommandHandler;
         }
 
 

@@ -8,9 +8,11 @@
         mc:Ignorable="d"
         Title="Switch" Height="450" Width="800">
     <Grid>
-        <Button Content="{Binding ProfileLang}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="127"/>
-        <Button Content="X"
-                Command="{Binding UniversalCommand}" CommandParameter="Del"
-                HorizontalAlignment="Left" Margin="142,10,0,0" VerticalAlignment="Top" Width="30"/>
+        <Button Content="{Binding ProfileLang}" 
+                Command="{Binding UniversalCommand}" CommandParameter="AddProfile"
+                HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="127"/>
+        <Button Content="{Binding ProxyLang}" 
+                Command="{Binding UniversalCommand}" CommandParameter="ProxySettings"
+                HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Width="127"/>
     </Grid>
 </Controls:MetroWindow>

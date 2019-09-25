@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Collections.ObjectModel;
+using UsefulThings;
 
 namespace Switch
 {
@@ -16,7 +18,10 @@ namespace Switch
 
         #region Fields
 
-        public string profileLang;
+        string profileLang = "Создать профиль";
+        string proxyLang = "Прокси";
+        ObservableCollection<Persona> persons = new ObservableCollection<Persona>();
+        ObservableCollection<Proxy> proxies = new ObservableCollection<Proxy>();
 
         #endregion
 
@@ -29,6 +34,36 @@ namespace Switch
             set
             {
                 profileLang = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string ProxyLang
+        {
+            get { return proxyLang; }
+            set
+            {
+                proxyLang = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<Persona> Persons
+        {
+            get { return persons; }
+            set
+            {
+                persons = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<Proxy> Proxies
+        {
+            get { return proxies; }
+            set
+            {
+                proxies = value;
                 OnPropertyChanged();
             }
         }
@@ -50,6 +85,7 @@ namespace Switch
             view = new Views.MainWindow(globalViewModel);
             Console.WriteLine("HW");
             ProfileLang = "Создать профиль";
+            ProxyLang = "Прокси";
         }
 
         #region Commands
@@ -61,9 +97,25 @@ namespace Switch
                 case "Del":
                     Del();
                     return;
+                case "AddProfile":
+                    AddProfile();
+                    return;
+                case "ProxySettings":
+                    ProxySettings();
+                    return;
                 default:
                     throw new NotImplementedException();
             }
+        }
+
+        private void ProxySettings()
+        {
+            ProxyMod.Run(this);
+        }
+
+        private void AddProfile()
+        {
+            AddProfiler.Add(this);
         }
 
         internal void OnSendCommandWithObjectCommandHandler(object objectValue)

@@ -1,0 +1,21 @@
+﻿<Controls:MetroWindow x:Class="Switch.Views.AddProfile"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Switch.Views"
+        mc:Ignorable="d"
+                      xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+        Title="AddProfile" Height="311.642" Width="368.806">
+    <Grid>
+        <StackPanel HorizontalAlignment="Left" Height="261" Margin="10,10,0,0" VerticalAlignment="Top" Width="341">
+            <TextBox Height="23" TextWrapping="NoWrap" Controls:TextBoxHelper.Watermark="This is a textbox"/>
+            <TextBox Height="23" TextWrapping="NoWrap" Controls:TextBoxHelper.Watermark="This is a textbox"/>
+            <TextBox Height="23" TextWrapping="NoWrap" Controls:TextBoxHelper.Watermark="This is a textbox"/>
+            <TextBox Height="23" TextWrapping="NoWrap" Controls:TextBoxHelper.Watermark="This is a textbox"/>
+            <TextBox Height="23" TextWrapping="NoWrap" Controls:TextBoxHelper.Watermark="This is a textbox"/>
+            <TextBox Height="23" TextWrapping="NoWrap" Controls:TextBoxHelper.Watermark="This is a textbox"/>
+        </StackPanel>
+
+    </Grid>
+</Controls:MetroWindow>
