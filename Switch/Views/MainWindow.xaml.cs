@@ -20,9 +20,10 @@ namespace Switch.Views
     /// </summary>
     public partial class MainWindow :MetroWindow
     {
-        public MainWindow()
+        public MainWindow(object context)
         {
             InitializeComponent();
+            DataContext = context;
         }
     }
 }
