@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Switch.Views"
         mc:Ignorable="d"
                       xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
-        Title="AddProfile" Height="311.642" Width="368.806">
+        Title="AddProfile" Height="311.642" Width="368.806" WindowStartupLocation="CenterOwner">
     <Grid>
         <StackPanel HorizontalAlignment="Left" Height="261" Margin="10,10,0,0" VerticalAlignment="Top" Width="341">
             <TextBox Text="{Binding Persona.Title}" 

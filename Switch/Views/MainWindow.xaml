@@ -8,11 +8,57 @@
         mc:Ignorable="d"
         Title="Switch" Height="450" Width="800">
     <Grid>
+
+        <Grid.Resources>
+
+            <!--<DataTemplate x:Key="ToBlackListButton">
+                <Button Content="0" CommandParameter="{Binding RelativeSource={RelativeSource Self}}"
+                        Command="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=DataContext.ToBlackListUniversalCommand}"/>
+            </DataTemplate>
+
+            <DataTemplate x:Key="DeleteButton">
+                <Button Content="X" CommandParameter="{Binding Id}"
+                        Command="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=DataContext.DelMessageUniversalCommand}"/>
+            </DataTemplate>
+
+            <DataTemplate x:Key="GoButton">
+                <Button Content="->" CommandParameter="{Binding Id}" 
+                        Command="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=DataContext.GoToMessageUniversalCommand}"/>
+            </DataTemplate>-->
+
+            <DataTemplate x:Key="OpenProfileButton">
+                <Button Content="Проверить" CommandParameter="{Binding ProfilePath}" 
+                        Style="{StaticResource AccentedSquareButtonStyle}" 
+                        Command="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=DataContext.Context.OpenProfileCommand}"/>
+            </DataTemplate>
+
+        </Grid.Resources>
+        
         <Button Content="{Binding Lang.CreateProfileLang}" 
                 Command="{Binding Context.UniversalCommand}" CommandParameter="AddProfile"
-                HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="127"/>
+                HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Width="127"/>
         <Button Content="{Binding Lang.ProxySettingsLang}" 
                 Command="{Binding Context.UniversalCommand}" CommandParameter="ProxySettings"
-                HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Width="127"/>
+                HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Width="127"/>
+
+
+        <StackPanel HorizontalAlignment="Left" Height="399" Margin="153,10,0,0" VerticalAlignment="Top" Width="600">
+
+            <Label Content="ПРОФИЛИ" HorizontalAlignment="Center"/>
+            <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" Margin="0">
+
+                <DataGrid ItemsSource="{Binding Context.Persons}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          Height="370" Margin="1" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Название" Binding="{Binding Title}" DisplayIndex="0"/>
+                        <DataGridTextColumn Header="Прокси" Binding="{Binding Proxy}"  DisplayIndex="1"/>
+                        <DataGridTextColumn Header="Путь" Binding="{Binding ProfilePath}"  DisplayIndex="2"/>
+                        <DataGridTemplateColumn Header="" DisplayIndex="3" CellTemplate="{StaticResource OpenProfileButton}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+        </StackPanel>
     </Grid>
 </Controls:MetroWindow>

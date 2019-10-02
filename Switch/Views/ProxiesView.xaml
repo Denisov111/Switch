@@ -8,6 +8,7 @@
                       xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         Title="ProxiesView" Height="450" Width="800">
     <Grid>
+        
         <StackPanel HorizontalAlignment="Left" Height="399" Margin="10,10,0,0" VerticalAlignment="Top" Width="780">
             <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" Margin="2">
                 <DataGrid ItemsSource="{Binding ProxyMod.ProxiesColl}"
@@ -16,13 +17,13 @@
                           IsReadOnly="True">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="IP" Binding="{Binding Ip}" DisplayIndex="0"/>
-                        <DataGridTextColumn Header="Порт" Binding="{Binding Port}"  DisplayIndex="1" ClipboardContentBinding="{x:Null}"/>
-                        <DataGridTextColumn Header="Логин" Binding="{Binding Login}"  DisplayIndex="2" ClipboardContentBinding="{x:Null}"/>
-                        <DataGridTextColumn Header="Пароль" Binding="{Binding Pwd}" DisplayIndex="3" ClipboardContentBinding="{x:Null}"/>
-                        <DataGridTextColumn Header="Тип" Binding="{Binding ProxyProtocol}" DisplayIndex="4" ClipboardContentBinding="{x:Null}"/>
-                        <DataGridTextColumn Header="Анонимность" Binding="{Binding Anonimity}" DisplayIndex="5" ClipboardContentBinding="{x:Null}"/>
-                        <DataGridTextColumn Header="Состояние" Binding="{Binding ProxyWorkStatus}" DisplayIndex="6" ClipboardContentBinding="{x:Null}"/>
-                        <!--<DataGridTemplateColumn Header="Удалить" DisplayIndex="6" ClipboardContentBinding="{x:Null}" CellTemplate="{StaticResource DeleteButton}"/>-->
+                        <DataGridTextColumn Header="Порт" Binding="{Binding Port}"  DisplayIndex="1" />
+                        <DataGridTextColumn Header="Логин" Binding="{Binding Login}"  DisplayIndex="2" />
+                        <DataGridTextColumn Header="Пароль" Binding="{Binding Pwd}" DisplayIndex="3"/>
+                        <DataGridTextColumn Header="Тип" Binding="{Binding ProxyProtocol}" DisplayIndex="4"/>
+                        <DataGridTextColumn Header="Анонимность" Binding="{Binding Anonimity}" DisplayIndex="5"/>
+                        <DataGridTextColumn Header="Состояние" Binding="{Binding ProxyWorkStatus}" DisplayIndex="6"/>
+                        
                         
                     </DataGrid.Columns>
                 </DataGrid>

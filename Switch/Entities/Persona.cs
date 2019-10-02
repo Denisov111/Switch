@@ -16,5 +16,11 @@ namespace Switch
         public string ProfilePath { get; set; }
         public string UserAgent { get; set; }
         public Proxy Proxy { get; set; }
+
+
+        public override string ToString()
+        {
+            return Title + " " + Description + " " + Proxy.ToString();
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Collections.ObjectModel;
 
 namespace Switch.ViewModels
 {
@@ -13,27 +14,6 @@ namespace Switch.ViewModels
         private Global global;
 
 
-
-        /*
-        public string ProfileLang
-        {
-            get { return global.ProfileLang; }
-            set
-            {
-                global.ProfileLang = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string ProxyLang
-        {
-            get { return global.ProxyLang; }
-            set
-            {
-                global.ProxyLang = value;
-                OnPropertyChanged();
-            }
-        }*/
 
         public Lang Lang
         {
@@ -45,12 +25,23 @@ namespace Switch.ViewModels
             }
         }
 
+        public ObservableCollection<Persona> Persons
+        {
+            get { return global.Persons; }
+            set
+            {
+                global.Persons = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public GlobalViewModel(Global global)
         {
             this.global = global;
             OnSendCommand += global.OnSendCommandHandler;
             OnSendCommandWithObject += global.OnSendCommandWithObjectCommandHandler;
+            OnSendOpenProfileCommand+=global.OnSendOpenProfileCommandHandler;
         }
 
 
@@ -58,6 +49,7 @@ namespace Switch.ViewModels
 
         public delegate void CommandHandler(string commandName);
         public event CommandHandler OnSendCommand;
+        public event CommandHandler OnSendOpenProfileCommand;
 
         public delegate void CommandHandlerWithObject(object objectValue);
         public event CommandHandlerWithObject OnSendCommandWithObject;
@@ -75,13 +67,14 @@ namespace Switch.ViewModels
             }
         }
 
-        public RelayCommand ToBlackListUniversalCommand
+        public RelayCommand OpenProfileCommand
         {
             get
             {
                 RelayCommand rc = new RelayCommand(obj =>
                 {
-                    OnSendCommandWithObject(obj);
+                    string path = obj.ToString();
+                    OnSendOpenProfileCommand(path);
                 });
                 return rc;
             }

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace Switch.Views
 {
@@ -28,6 +29,12 @@ namespace Switch.Views
                 Context = context,
                 Lang = context.Lang,
             };
+        }
+
+        
+        async internal void onSendMessage(string message)
+        {
+            await this.ShowMessageAsync("Ошибка", message);
         }
     }
 }

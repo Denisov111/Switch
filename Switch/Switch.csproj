@@ -68,7 +68,7 @@
     </Reference>
     <Reference Include="UsefulThings, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ChromeModForNet\UsefulThings\bin\Debug\UsefulThings.dll</HintPath>
+      <HintPath>..\UsefulThings\bin\Debug\UsefulThings.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>

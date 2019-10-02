@@ -130,7 +130,6 @@ namespace Switch
                     SendMessage("Не удалось загрузить прокси, возможно файл proxies.xml повреждён");
                 L.LW(ex);
             }
-
         }
 
         private void AddNewProxy(Proxy pr)

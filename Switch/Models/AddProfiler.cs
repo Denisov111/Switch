@@ -7,6 +7,8 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using UsefulThings;
+using System.IO;
+using System.Xml.Linq;
 
 namespace Switch
 {
@@ -87,14 +89,6 @@ namespace Switch
             view.ShowDialog();
         }
 
-        internal static void Add(Global global)
-        {
-            
-            //Views.AddProfile f = new Views.AddProfile();
-            //f.ShowDialog();
-            //Persona persona=f.persona;
-        }
-
         internal void OnSendCommandHandler(string commandName)
         {
             switch (commandName)
@@ -109,8 +103,42 @@ namespace Switch
 
         private void AddPerson()
         {
-            if(isUseProxy) Persona.Proxy = Proxy;
+            if (isUseProxy) Persona.Proxy = Proxy;
+            Persona.ProfilePath = Path.GetRandomFileName();
             global.Persons.Add(Persona);
+            SavePersons();
+            view.Close();
+        }
+
+        private void SavePersons()
+        {
+            string profilesFile = @"profiles.xml";
+            XDocument doc = new XDocument();
+            XElement ps = new XElement("profiles");
+            doc.Add(ps);
+
+            foreach (Persona pers in global.Persons)
+            {
+                XElement persona = new XElement("profile",
+                                new XElement("title", pers.Title),
+                                new XElement("description", pers.Description),
+                                new XElement("profile_path", pers.ProfilePath),
+                                new XElement("user_agent", pers.UserAgent));
+
+                if(pers.Proxy!=null)
+                {
+                    XElement proxy = new XElement("proxy",
+                                new XElement("ip", pers.Proxy.Ip),
+                                new XElement("port", pers.Proxy.Port),
+                                new XElement("login", pers.Proxy.Login),
+                                new XElement("pwd", pers.Proxy.Pwd),
+                                new XElement("protocol_type", pers.Proxy.ProxyProtocol.ToString()));
+                    persona.Add(proxy);
+                }
+                doc.Root.Add(persona);
+            }
+
+            doc.Save(profilesFile);
         }
 
         internal void OnSendCommandWithObjectCommandHandler(object objectValue)

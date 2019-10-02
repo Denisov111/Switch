@@ -199,7 +199,7 @@ namespace UsefulThings
 
         public override string ToString()
         {
-            return Ip + ":" + Port + "@" + Login + ":" + Pwd;
+            return Ip + ":" + Port;
         }
 
 
