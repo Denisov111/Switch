@@ -22,9 +22,10 @@ namespace Switch.Views
     {
         public Persona persona;
 
-        public AddProfile()
+        public AddProfile(ViewModels.AddProfileViewModel addProfileViewModel)
         {
             InitializeComponent();
+            DataContext = addProfileViewModel;
         }
     }
 }

@@ -50,6 +50,8 @@
     <Reference Include="MasterDevs.ChromeDevTools">
       <HintPath>..\..\ChromeModForNet\ChromeModForNet\bin\Debug\MasterDevs.ChromeDevTools.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -64,19 +66,19 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="UsefulThings">
-      <HintPath>..\..\ChromeModForNet\ChromeModForNet\bin\Debug\UsefulThings.dll</HintPath>
+    <Reference Include="UsefulThings, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ChromeModForNet\UsefulThings\bin\Debug\UsefulThings.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Lang.cs" />
     <Compile Include="Models\AddProfiler.cs" />
     <Compile Include="Models\MVVMModelTemplate.cs" />
     <Compile Include="Models\ProxyMod.cs" />
     <Compile Include="RelayCommand.cs" />
-    <Compile Include="ViewModels\addProfileViewModel.cs" />
+    <Compile Include="ViewModels\AddProfileViewModel.cs" />
     <Compile Include="ViewModels\GlobalViewModel.cs" />
     <Compile Include="ViewModels\MVVMModelTemplateViewModel.cs" />
     <Compile Include="Views\AddProfile.xaml.cs">
@@ -86,6 +88,9 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MVVMModelTemplateView.cs" />
+    <Compile Include="Views\ProxiesView.xaml.cs">
+      <DependentUpon>ProxiesView.xaml</DependentUpon>
+    </Compile>
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -100,6 +105,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProxiesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -123,6 +132,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\en.resx" />
+    <EmbeddedResource Include="Resources\ru.resx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

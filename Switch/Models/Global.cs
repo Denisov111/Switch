@@ -18,8 +18,7 @@ namespace Switch
 
         #region Fields
 
-        string profileLang = "Создать профиль";
-        string proxyLang = "Прокси";
+        Lang lang;
         ObservableCollection<Persona> persons = new ObservableCollection<Persona>();
         ObservableCollection<Proxy> proxies = new ObservableCollection<Proxy>();
 
@@ -28,22 +27,12 @@ namespace Switch
 
         #region Properties
 
-        public string ProfileLang
+        public Lang Lang
         {
-            get { return profileLang; }
+            get { return lang; }
             set
             {
-                profileLang = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string ProxyLang
-        {
-            get { return proxyLang; }
-            set
-            {
-                proxyLang = value;
+                lang = value;
                 OnPropertyChanged();
             }
         }
@@ -76,16 +65,17 @@ namespace Switch
 
         public ViewModels.GlobalViewModel globalViewModel;
         public Views.MainWindow view;
+        public ProxyMod proxyMod;
 
         #endregion
 
         public void Run()
         {
+            lang = new Lang();
+            proxyMod = new ProxyMod();
             globalViewModel = new ViewModels.GlobalViewModel(this);
             view = new Views.MainWindow(globalViewModel);
-            Console.WriteLine("HW");
-            ProfileLang = "Создать профиль";
-            ProxyLang = "Прокси";
+            Proxies = proxyMod.ProxiesColl;
         }
 
         #region Commands
@@ -110,12 +100,12 @@ namespace Switch
 
         private void ProxySettings()
         {
-            ProxyMod.Run(this);
+            proxyMod.Run(this);
         }
 
         private void AddProfile()
         {
-            AddProfiler.Add(this);
+            AddProfiler ap = new AddProfiler(this);
         }
 
         internal void OnSendCommandWithObjectCommandHandler(object objectValue)
@@ -125,7 +115,7 @@ namespace Switch
 
         private void Del()
         {
-            ProfileLang = ProfileLang.Substring(0, ProfileLang.Length - 1);
+            //ProfileLang = ProfileLang.Substring(0, ProfileLang.Length - 1);
         }
 
         #endregion

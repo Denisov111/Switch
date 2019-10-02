@@ -1,0 +1,58 @@
+﻿<Controls:MetroWindow x:Class="Switch.ProxiesView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Switch.Views"
+        mc:Ignorable="d"
+                      xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+        Title="ProxiesView" Height="450" Width="800">
+    <Grid>
+        <StackPanel HorizontalAlignment="Left" Height="399" Margin="10,10,0,0" VerticalAlignment="Top" Width="780">
+            <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" Margin="2">
+                <DataGrid ItemsSource="{Binding ProxyMod.ProxiesColl}"
+                    Height="203"
+                           AutoGenerateColumns="False"
+                          IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="IP" Binding="{Binding Ip}" DisplayIndex="0"/>
+                        <DataGridTextColumn Header="Порт" Binding="{Binding Port}"  DisplayIndex="1" ClipboardContentBinding="{x:Null}"/>
+                        <DataGridTextColumn Header="Логин" Binding="{Binding Login}"  DisplayIndex="2" ClipboardContentBinding="{x:Null}"/>
+                        <DataGridTextColumn Header="Пароль" Binding="{Binding Pwd}" DisplayIndex="3" ClipboardContentBinding="{x:Null}"/>
+                        <DataGridTextColumn Header="Тип" Binding="{Binding ProxyProtocol}" DisplayIndex="4" ClipboardContentBinding="{x:Null}"/>
+                        <DataGridTextColumn Header="Анонимность" Binding="{Binding Anonimity}" DisplayIndex="5" ClipboardContentBinding="{x:Null}"/>
+                        <DataGridTextColumn Header="Состояние" Binding="{Binding ProxyWorkStatus}" DisplayIndex="6" ClipboardContentBinding="{x:Null}"/>
+                        <!--<DataGridTemplateColumn Header="Удалить" DisplayIndex="6" ClipboardContentBinding="{x:Null}" CellTemplate="{StaticResource DeleteButton}"/>-->
+                        
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <StackPanel Orientation="Horizontal">
+                <ComboBox Margin="2" SelectedIndex="{Binding ProxyMod.ProxyFormatIndex}" FontSize="14">
+                    <ComboBoxItem Content="ip:port:login:password" HorizontalAlignment="Left" Width="209"/>
+                    <ComboBoxItem Content="ip:port@login:password" HorizontalAlignment="Left" Width="209"/>
+                    <ComboBoxItem Content="ip:port|login:password" HorizontalAlignment="Left" Width="209"/>
+                    <ComboBoxItem Content="login:password@ip:port" HorizontalAlignment="Left" Width="209"/>
+                    <ComboBoxItem Content="login:password:ip:port" HorizontalAlignment="Left" Width="209"/>
+                </ComboBox>
+                <ComboBox SelectedIndex="{Binding ProxyMod.ProxyTypeIndex}" Width="80" SelectedValuePath="Content" Margin="2">
+                    <ComboBoxItem  Content="HTTP" />
+                    <ComboBoxItem  Content="SOCKS5"/>
+                </ComboBox>
+            </StackPanel>
+            
+            
+            <TextBox Text="{Binding ProxyMod.TextProxyList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Height="113" TextWrapping="Wrap" AcceptsReturn="True" Margin="2" VerticalScrollBarVisibility="Auto"
+                     Controls:TextBoxHelper.Watermark="ip:port:login:password&#x0a;ip:port:login:password&#x0a;ip:port:login:password&#x0a;ip:port:login:password&#x0a;"/>
+            <StackPanel Height="42" Orientation="Horizontal" Margin="2">
+                <Button Content="{Binding Lang.AddProxy}" Margin="2" Click="Button_Click"/>
+                <Button Content="{Binding Lang.AddProxyFromFile}" Margin="2" Click="Button_Click_1"/>
+                <Button Content="{Binding Lang.CheckProxy}" Margin="2" Click="Button_Click_2"/>
+                <Button Content="{Binding Lang.DelAllProxy}" Margin="2" Click="Button_Click_3"/>
+            </StackPanel>
+        </StackPanel>
+
+    </Grid>
+</Controls:MetroWindow>

@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.29230.47
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Switch", "Switch\Switch.csproj", "{6B36BD48-51DB-4211-9C4C-3E0CC88208BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChromeModForNet", "ChromeModForNet\ChromeModForNet.csproj", "{3DB772F4-3957-466C-BD7F-98994181E0BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsefulThings", "UsefulThings\UsefulThings.csproj", "{7FD2FF42-B73C-42F9-9A0E-C9BA468DEFEF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{6B36BD48-51DB-4211-9C4C-3E0CC88208BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B36BD48-51DB-4211-9C4C-3E0CC88208BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B36BD48-51DB-4211-9C4C-3E0CC88208BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DB772F4-3957-466C-BD7F-98994181E0BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DB772F4-3957-466C-BD7F-98994181E0BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DB772F4-3957-466C-BD7F-98994181E0BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DB772F4-3957-466C-BD7F-98994181E0BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FD2FF42-B73C-42F9-9A0E-C9BA468DEFEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FD2FF42-B73C-42F9-9A0E-C9BA468DEFEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FD2FF42-B73C-42F9-9A0E-C9BA468DEFEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FD2FF42-B73C-42F9-9A0E-C9BA468DEFEF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

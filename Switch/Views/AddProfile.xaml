@@ -9,12 +9,23 @@
         Title="AddProfile" Height="311.642" Width="368.806">
     <Grid>
         <StackPanel HorizontalAlignment="Left" Height="261" Margin="10,10,0,0" VerticalAlignment="Top" Width="341">
-            <TextBox Height="23" TextWrapping="NoWrap" Controls:TextBoxHelper.Watermark="This is a textbox"/>
-            <TextBox Height="23" TextWrapping="NoWrap" Controls:TextBoxHelper.Watermark="This is a textbox"/>
-            <TextBox Height="23" TextWrapping="NoWrap" Controls:TextBoxHelper.Watermark="This is a textbox"/>
-            <TextBox Height="23" TextWrapping="NoWrap" Controls:TextBoxHelper.Watermark="This is a textbox"/>
-            <TextBox Height="23" TextWrapping="NoWrap" Controls:TextBoxHelper.Watermark="This is a textbox"/>
-            <TextBox Height="23" TextWrapping="NoWrap" Controls:TextBoxHelper.Watermark="This is a textbox"/>
+            <TextBox Text="{Binding Persona.Title}" 
+                     Height="23" TextWrapping="NoWrap" Margin="0,3" Controls:TextBoxHelper.Watermark="Title"/>
+            <TextBox Text="{Binding Persona.Description}"
+                     Height="100" TextWrapping="NoWrap" Margin="0,3" Controls:TextBoxHelper.Watermark="Description"/>
+            <TextBox Text="{Binding Persona.UserAgent}"
+                     Height="23" TextWrapping="NoWrap" Margin="0,3" Controls:TextBoxHelper.Watermark="User-agent"/>
+            <StackPanel Orientation="Horizontal">
+                
+                <CheckBox IsChecked="{Binding IsUseProxy}" 
+                          Content="использовать прокси"/>
+                <ComboBox ItemsSource="{Binding Proxies}"
+                          SelectedItem="{Binding Proxy}"
+                          Width="190"  Margin="10,3"/>
+            </StackPanel>
+            <Button Content="Создать"
+                    Command="{Binding UniversalCommand}" CommandParameter="AddPerson"/>
+
         </StackPanel>
 
     </Grid>

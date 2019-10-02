@@ -20,10 +20,14 @@ namespace Switch.Views
     /// </summary>
     public partial class MainWindow :MetroWindow
     {
-        public MainWindow(object context)
+        public MainWindow(ViewModels.GlobalViewModel context)
         {
             InitializeComponent();
-            DataContext = context;
+            DataContext = new
+            {
+                Context = context,
+                Lang = context.Lang,
+            };
         }
     }
 }

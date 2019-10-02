@@ -14,7 +14,7 @@ namespace Switch.ViewModels
 
 
 
-
+        /*
         public string ProfileLang
         {
             get { return global.ProfileLang; }
@@ -33,7 +33,18 @@ namespace Switch.ViewModels
                 global.ProxyLang = value;
                 OnPropertyChanged();
             }
+        }*/
+
+        public Lang Lang
+        {
+            get { return global.Lang; }
+            set
+            {
+                global.Lang = value;
+                OnPropertyChanged();
+            }
         }
+
 
         public GlobalViewModel(Global global)
         {

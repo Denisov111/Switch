@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace Switch.ViewModels
 {
-    public class MVVMModelTemplateViewModel
+    public class MVVMModelTemplateViewModel : INotifyPropertyChanged
     {
         private MVVMModelTemplate template;
 
