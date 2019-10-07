@@ -19,7 +19,7 @@ using xNet.Net;
 
 namespace UsefulThings
 {
-    class Net
+    public class Net
     {
         public static string Resp(string requestPath)    //на вход подаем URL API
         {
