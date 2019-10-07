@@ -104,14 +104,12 @@ namespace Switch
         public ProxyMod()
         {
             ProxyCollInit();
-
         }
 
         internal void Run(Global global)
         {
             proxiesViewModel = new ViewModels.ProxiesViewModel(this);
             view = new ProxiesView(global.Lang, proxiesViewModel);
-            //ProxiesView f = new ProxiesView(global.Lang, this);
             SendMessage += view.onSendMessage;
             view.ShowDialog();
         }
@@ -164,8 +162,6 @@ namespace Switch
 
         internal void AddProxiesToMod()
         {
-            //if (proxiesStrings.Count == 0) return;
-
             protocol = (ProxyTypeIndex == 0) ? ProxyProtocol.HTTP : ProxyProtocol.SOCKS5;
             switch (ProxyFormatIndex)
             {
@@ -265,7 +261,6 @@ namespace Switch
             }
             if (!String.IsNullOrEmpty(errorsMessage)) SendMessage(errorsMessage);
         }
-
 
         private void Format2()
         {
@@ -392,10 +387,51 @@ namespace Switch
             if (!String.IsNullOrEmpty(errorsMessage)) SendMessage(errorsMessage);
         }
 
+        
+
+        
+
+        #endregion
+
+
+        #region Commands
+
+        internal void OnSendCommandHandler(string commandName)
+        {
+            switch (commandName)
+            {
+                case "AddProxyList":
+                    AddProxyList();
+                    return;
+                case "AddProxyFromFile":
+                    AddProxyFromFile();
+                    return;
+                case "CheckProxy":
+                    CheckProxy();
+                    return;
+                case "DelAllProxy":
+                    DelAllProxy();
+                    return;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
         internal void AddProxyFromFile()
         {
             proxiesStrings = Helpers.GetStringCollectionFromFile();
             AddProxiesToMod();
+        }
+
+
+        #region Check proxy
+
+        async private void CheckProxy()
+        {
+            for(int i=0;i< proxiesColl.Count;i++)
+            {
+                await CheckProxy(proxiesColl[i]);
+            }
         }
 
         async internal Task CheckProxy(Proxy proxy)
@@ -405,7 +441,7 @@ namespace Switch
             string judge = "http://azenv.net/";
 
             string result_ = await Net.RespAsync(judge);
-            if(String.IsNullOrEmpty(result_))
+            if (String.IsNullOrEmpty(result_))
             {
                 proxy.Status = ProxyWorkStatus.NotAvailable;
                 return;
@@ -430,7 +466,7 @@ namespace Switch
 
             if (Revealingheader == null) RevealingheaderInit();
 
-            string result = Net.Resp(judge);
+            string result = await Net.RespAsync(judge, proxy);
             Dictionary<string, string> values = pj.parse(result);
 
             // Test to se if our ip adress exist in the result
@@ -469,13 +505,17 @@ namespace Switch
                 }
             }
 
-            if (result.IndexOf(proxy.Ip) != -1)
+            if (result.IndexOf(ownIp) != -1)
             {
                 // Debug: _Global.log(server.Ip + ": Have your ip in results");
                 L.LW("Have your ip in results. ");
                 proxy.Anonimity = Anonimity.None;
             }
 
+            if (proxy.Anonimity == Anonimity.Unknow)
+            {
+                proxy.Anonimity = Anonimity.High;
+            }
             Console.WriteLine(proxy.Anonimity);
         }
 
@@ -512,6 +552,7 @@ namespace Switch
                 {"HTTP_ACCEPT", false},
                 {"HTTP_ACCEPT_ENCODING", false},
                 {"HTTP_ACCEPT_LANGUAGE", false},
+                {"HTTP_ACCEPT_CHARSET", false},
                 {"HTTP_CONNECTION", false},
                 {"HTTP_HOST", false},
                 {"HTTP_USER_AGENT", false},
@@ -526,6 +567,8 @@ namespace Switch
             };
         }
 
+        #endregion
+
         internal void DelAllProxy()
         {
             ProxiesColl.Clear();
@@ -534,31 +577,8 @@ namespace Switch
             XElement ps = new XElement("proxies");
             doc.Add(ps);
             doc.Save(proxiesFile);
-        }
-
-        #endregion
-
-
-        #region Commands
-
-        internal void OnSendCommandHandler(string commandName)
-        {
-            switch (commandName)
-            {
-                case "Del":
-                    Del();
-                    return;
-                case "AddProfile":
-                    AddProfile();
-                    return;
-                default:
-                    throw new NotImplementedException();
-            }
-        }
-
-        private void AddProfile()
-        {
-            throw new NotImplementedException();
+            TextProxyList = "";
+            view.proxyListTextBox.Text = "";
         }
 
         async internal void OnSendCommandWithObjectCommandHandler(object objectValue)
@@ -572,13 +592,6 @@ namespace Switch
             {
                 L.LW(ex);
             }
-        }
-
-
-
-        private void Del()
-        {
-            //ProfileLang = ProfileLang.Substring(0, ProfileLang.Length - 1);
         }
 
         #endregion

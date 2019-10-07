@@ -37,6 +37,36 @@ namespace Switch.ViewModels
             }
         }
 
+        public string TextProxyList
+        {
+            get { return mod.TextProxyList; }
+            set
+            {
+                mod.TextProxyList = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int ProxyFormatIndex
+        {
+            get { return mod.ProxyFormatIndex; }
+            set
+            {
+                mod.ProxyFormatIndex = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int ProxyTypeIndex
+        {
+            get { return mod.ProxyTypeIndex; }
+            set
+            {
+                mod.ProxyTypeIndex = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ProxiesViewModel(ProxyMod mod)
         {
             this.mod = mod;

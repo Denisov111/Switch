@@ -40,7 +40,7 @@
             </Border>
 
             <StackPanel Orientation="Horizontal">
-                <ComboBox Margin="2" SelectedIndex="{Binding ProxyMod.ProxyFormatIndex}" FontSize="14">
+                <ComboBox Margin="2" SelectedIndex="{Binding ProxiesViewModel.ProxyFormatIndex}" FontSize="14">
                     <ComboBoxItem Content="ip:port:login:password" HorizontalAlignment="Left" Width="209"/>
                     <ComboBoxItem Content="ip:port@login:password" HorizontalAlignment="Left" Width="209"/>
                     <ComboBoxItem Content="ip:port|login:password" HorizontalAlignment="Left" Width="209"/>
@@ -48,21 +48,25 @@
                     <ComboBoxItem Content="login:password:ip:port" HorizontalAlignment="Left" Width="209"/>
                     <ComboBoxItem Content="ip:port" HorizontalAlignment="Left" Width="209"/>
                 </ComboBox>
-                <ComboBox SelectedIndex="{Binding ProxyMod.ProxyTypeIndex}" Width="80" SelectedValuePath="Content" Margin="2">
+                <ComboBox SelectedIndex="{Binding ProxiesViewModel.ProxyTypeIndex}" Width="80" SelectedValuePath="Content" Margin="2">
                     <ComboBoxItem  Content="HTTP" />
                     <ComboBoxItem  Content="SOCKS5"/>
                 </ComboBox>
             </StackPanel>
-            
-            
-            <TextBox Text="{Binding ProxyMod.TextProxyList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+
+
+            <TextBox x:Name="proxyListTextBox" Text="{Binding ProxiesViewModel.TextProxyList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      Height="113" TextWrapping="Wrap" AcceptsReturn="True" Margin="2" VerticalScrollBarVisibility="Auto"
                      Controls:TextBoxHelper.Watermark="ip:port:login:password&#x0a;ip:port:login:password&#x0a;ip:port:login:password&#x0a;ip:port:login:password&#x0a;"/>
             <StackPanel Height="42" Orientation="Horizontal" Margin="2">
-                <!--<Button Content="{Binding Lang.AddProxy}" Margin="2" Click="Button_Click"/>
-                <Button Content="{Binding Lang.AddProxyFromFile}" Margin="2" Click="Button_Click_1"/>
-                <Button Content="{Binding Lang.CheckProxy}" Margin="2" Click="Button_Click_2"/>
-                <Button Content="{Binding Lang.DelAllProxy}" Margin="2" Click="Button_Click_3"/>-->
+                <Button Content="{Binding Lang.AddProxy}" Margin="2"
+                        Command="{Binding ProxiesViewModel.UniversalCommand}" CommandParameter="AddProxyList"/>
+                <Button Content="{Binding Lang.AddProxyFromFile}" Margin="2" 
+                        Command="{Binding ProxiesViewModel.UniversalCommand}" CommandParameter="AddProxyFromFile"/>
+                <Button Content="{Binding Lang.CheckProxy}" Margin="2" 
+                        Command="{Binding ProxiesViewModel.UniversalCommand}" CommandParameter="CheckProxy"/>
+                <Button Content="{Binding Lang.DelAllProxy}" Margin="2"
+                        Command="{Binding ProxiesViewModel.UniversalCommand}" CommandParameter="DelAllProxy"/>
             </StackPanel>
         </StackPanel>
 
