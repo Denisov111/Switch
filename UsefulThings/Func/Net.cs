@@ -46,92 +46,62 @@ namespace UsefulThings
             return response;
         }
 
-        async public static Task<string> RespAsync(string requestPath)   
+        async public static Task<string> RespAsync(string requestPath, Proxy proxy = null)   
         {
-            string response = String.Empty;
-            for (int i = 0; i <= 5; i++)
+            if (proxy == null)
             {
-                try
+                string response = string.Empty;
+                for (int i = 0; i <= 5; i++)
                 {
-                    HttpWebRequest Request = (HttpWebRequest)WebRequest.Create(requestPath);   
-                    WebResponse resp = await Request.GetResponseAsync();
-                    HttpWebResponse Response = (HttpWebResponse)resp;     
-                    StreamReader myStream = new StreamReader(Response.GetResponseStream(), Encoding.UTF8);
-                    string responseString = myStream.ReadToEnd();
-                    Response.Close();
+                    try
+                    {
+                        HttpWebRequest Request = (HttpWebRequest)WebRequest.Create(requestPath);  
+                        WebResponse resp = await Request.GetResponseAsync();
+                        HttpWebResponse Response = (HttpWebResponse)resp;      
+                        StreamReader myStream = new StreamReader(Response.GetResponseStream(), Encoding.UTF8);
+                        string responseString = myStream.ReadToEnd();
+                        Response.Close();
 
-                    return responseString;
+                        return responseString;
+                    }
+                    catch (Exception ex)
+                    {
+                        await Task.Delay(500);
+                        L.LW("Сбой метода Resp :\n" + ex.ToString());
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Thread.Sleep(500);
-                    L.LW("Сбой метода Resp :\n" + ex.ToString());
-                }
+                return null;
             }
-            return response;
+            else
+            {
+                string response = string.Empty;
+                for (int i = 0; i <= 5; i++)
+                {
+                    try
+                    {
+                        HttpRequest request = new HttpRequest();
+                        ProxyType proxyType = (proxy.ProxyProtocol == ProxyProtocol.HTTP) ? ProxyType.Http: ProxyType.Socks5;
+                        ProxyClient client = ProxyHelper.CreateProxyClient(proxyType, proxy.Ip, Convert.ToInt32(proxy.Port), proxy.Login, proxy.Pwd);
+                        request.Proxy = client;
+
+                        string content = "";
+                        await Task.Run(() => content = request.Get(requestPath).ToString());
+                        if (content == "")
+                        {
+                            await Task.Delay(500);
+                            continue;
+                        }
+                        return content;
+                    }
+                    catch (Exception ex)
+                    {
+                        await Task.Delay(500);
+                        L.LW("Сбой метода Resp :\n" + ex.ToString());
+                    }
+                }
+                return null;
+            }
         }
-
-        //async public static Task<string> RespAsync(string request_path, string proxy)    //на вход подаем URL API
-        //{
-        //    Console.WriteLine("Строка прокси: " + proxy);
-        //    if (proxy == String.Empty || proxy == "" || proxy == null)
-        //    {
-        //        Thread.Sleep(200);
-        //        string response = string.Empty;
-        //        for (int i = 0; i <= 5; i++)
-        //        {
-        //            try
-        //            {
-        //                HttpWebRequest Request = (HttpWebRequest)WebRequest.Create(request_path);   //отправление запроса к серверу API
-        //                WebResponse resp = await Request.GetResponseAsync();
-        //                HttpWebResponse Response = (HttpWebResponse)resp;      //получение ответа от сервера API
-        //                StreamReader myStream = new StreamReader(Response.GetResponseStream(), Encoding.UTF8);
-        //                string responseX = myStream.ReadToEnd();
-        //                Response.Close();
-
-        //                return responseX;
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                Thread.Sleep(1000);
-        //                L.LW("Сбой метода Resp :\n" + ex.ToString());
-        //            }
-        //        }
-        //        L.LW("Что-то пошло не так, VK не отвечает\n");
-        //        return null;
-        //    }
-        //    else
-        //    {
-        //        Thread.Sleep(200);
-        //        string response = string.Empty;
-        //        for (int i = 0; i <= 5; i++)
-        //        {
-        //            try
-        //            {
-        //                xNet.Net.HttpRequest request = new xNet.Net.HttpRequest();
-        //                Proxy.MakeClient(request, proxy);
-
-        //                string content = "";
-        //                await Task.Run(() => content = request.Get(request_path).ToString());
-        //                if (content == "")
-        //                {
-        //                    await Task.Delay(500);
-        //                    continue;
-        //                }
-        //                return content;
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                Thread.Sleep(1000);
-        //                Global.f.EventMonitor("Сбой метода Resp с прокси.", ex);
-        //                Console.WriteLine(proxy);
-        //            }
-        //        }
-        //        L.LW("Что-то пошло не так, VK не отвечает\n");
-        //        return null;
-        //    }
-
-        //}
 
         //public static string Resp(string request_path, string proxy)
         //{

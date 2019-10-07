@@ -37,8 +37,9 @@ namespace UsefulThings
     {
 
 
-        public bool isGoodVKAccess;
-        public Anonimity anonimity;
+        bool isGoodVKAccess;
+        Anonimity anonimity;
+        ProxyWorkStatus status;
 
         public int Id { get; set; }
         public string Ip { get; set; }
@@ -46,7 +47,15 @@ namespace UsefulThings
         public string Login { get; set; }
         public string Pwd { get; set; }
         public ProxyProtocol ProxyProtocol { get; set; }
-        public ProxyWorkStatus Status { get; set; }
+        public ProxyWorkStatus Status
+        {
+            get { return status; }
+            set
+            {
+                status = value;
+                OnPropertyChanged();
+            }
+        }
         public bool IsAnonimous { get; set; }
         public Anonimity Anonimity
         {
@@ -54,7 +63,7 @@ namespace UsefulThings
             set
             {
                 anonimity = value;
-                OnPropertyChanged("Anonimity");
+                OnPropertyChanged();
             }
         }
         public static string OwnIP { get; set; }

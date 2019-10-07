@@ -18,7 +18,7 @@ namespace Switch
         public delegate void MessageHandler(string message);
         public event MessageHandler SendMessage;
 
-
+        public static Dictionary<string, bool> Revealingheader { get; set; }
         StringCollection proxiesStrings;
         ProxyProtocol protocol;
 
@@ -104,7 +104,7 @@ namespace Switch
         public ProxyMod()
         {
             ProxyCollInit();
-            
+
         }
 
         internal void Run(Global global)
@@ -144,7 +144,7 @@ namespace Switch
             }
             catch (Exception ex)
             {
-                if(SendMessage!=null)
+                if (SendMessage != null)
                     SendMessage("Не удалось загрузить прокси, возможно файл proxies.xml повреждён");
                 L.LW(ex);
             }
@@ -398,26 +398,35 @@ namespace Switch
             AddProxiesToMod();
         }
 
-        internal void CheckProxy(Proxy proxy)
+        async internal Task CheckProxy(Proxy proxy)
         {
             ProxyJudge pj = new ProxyJudge();
             string ownIp = null;
+            string judge = "http://azenv.net/";
 
-                string result_ = Net.Resp(judge);
-                string ip = "";
+            string result_ = await Net.RespAsync(judge);
+            if(String.IsNullOrEmpty(result_))
+            {
+                proxy.Status = ProxyWorkStatus.NotAvailable;
+                return;
+            }
+            else
+            {
+                proxy.Status = ProxyWorkStatus.IsAvailable;
+            }
+            string ip = "";
 
-                Dictionary<string, string> values_ = pj.parse(result_);
+            Dictionary<string, string> values_ = pj.parse(result_);
 
-                if (values_.TryGetValue("REMOTE_ADDR", out ip))
-                {
-                    OwnIP = ip;
-                    L.LW("Found own ip: " + ip);
-                }
-                else
-                {
-                    throw new Exception("REMOTE_ADDR missing in field");
-                }
-            
+            if (values_.TryGetValue("REMOTE_ADDR", out ip))
+            {
+                ownIp = ip;
+                L.LW("Found own ip: " + ip);
+            }
+            else
+            {
+                throw new Exception("REMOTE_ADDR missing in field");
+            }
 
             if (Revealingheader == null) RevealingheaderInit();
 
@@ -426,20 +435,19 @@ namespace Switch
 
             // Test to se if our ip adress exist in the result
 
-
+            proxy.Anonimity = Anonimity.Unknow;
             if (result == "")
             {
-                Anonimity = Anonimity.Unknow;
+                proxy.Anonimity = Anonimity.Unknow;
                 throw new Exception("Empty response");
             }
 
             if (result.IndexOf("REQUEST_URI") == -1)
             {
-                Anonimity = Anonimity.Unknow;
+                proxy.Anonimity = Anonimity.Unknow;
                 throw new Exception("Did not find header info. The proxy may tamper with the response");
             }
 
-            string anonymity = "";
             // Will go troght black and whitlist to see what level of anonymity this server provides
             foreach (KeyValuePair<string, string> value in values)
             {
@@ -448,44 +456,74 @@ namespace Switch
                 {
                     if (revealing)
                     {
-                        anonymity = "Low";
-                        Anonimity = Anonimity.Low;
+                        proxy.Anonimity = Anonimity.Low;
                         // Debug: _Global.log("Found revealing header " + value.Key + " : " + value.Value);
-                        Status += "Found revealing header " + value.Key + " = " + value.Value + ". ";
+                        L.LW("Found revealing header " + value.Key + " = " + value.Value + ". ");
                     }
                 }
                 else
                 {
-                    anonymity = "Low";
-                    Anonimity = Anonimity.Low;
+                    proxy.Anonimity = Anonimity.Low;
                     // Debug: _Global.log("Have unknown header '" + value.Key + " : " + value.Value);
-                    Status += "Have unknown header '" + value.Key + " : " + value.Value + ". ";
+                    L.LW("Have unknown header '" + value.Key + " : " + value.Value + ". ");
                 }
             }
 
-
-
-            if (result.IndexOf(Ip) != -1)
+            if (result.IndexOf(proxy.Ip) != -1)
             {
                 // Debug: _Global.log(server.Ip + ": Have your ip in results");
-                Status += "Have your ip in results. ";
-                anonymity = "None";
-                Anonimity = Anonimity.None;
+                L.LW("Have your ip in results. ");
+                proxy.Anonimity = Anonimity.None;
             }
 
-            // No ip and not proxy filds found
-            if (anonymity == "")
-            {
-                anonymity = "High";
-                Anonimity = Anonimity.High;
-                Status = "Ok";
-            }
-            else
-            {
-                Status = "Ok (" + Status + ")";
-            }
+            Console.WriteLine(proxy.Anonimity);
+        }
 
-            Console.WriteLine(Ip + " Ok: anonymity=" + anonymity + ", status=" + Status);
+        private void RevealingheaderInit()
+        {
+            // Hardcoded list of bad and good headers. 
+            Revealingheader = new Dictionary<string, bool>()
+            {
+                {"HTTP_CACHE_CONTROL", true},
+                {"HTTP_CDN_SRC_IP", true},
+                {"HTTP_CLIENT_IP", true},
+                {"HTTP_REFERER", true},
+                {"HTTP_IF_NONE_MATCH", true},
+                {"HTTP_IF_MODIFIED_SINCE", true},
+                {"HTTP_MAX_FORWARDS", true},
+                {"HTTP_OCT_MAX_AGE", true},
+                {"HTTP_PROXY_AGENT", true},
+                {"HTTP_PROXY_CONNECTION", true},
+                {"HTTP_VIA", true},
+                {"HTTP_X_ACCEPT_ENCODING_PRONTOWIFI", true},
+                {"HTTP_X_BLUECOAT_VIA", true},
+                {"HTTP_X_FORWARDED_FOR", true},
+                {"HTTP_X_FORWARD_FOR", true},
+                {"HTTP_X_FORWARDED_HOST", true},
+                {"HTTP_X_FORWARDED_SERVER", true},
+                {"HTTP_X_MATO_PARAM", true},
+                {"HTTP_X_NAI_ID", true},
+                {"HTTP_X_PROXY_ID", true},
+                {"HTTP_X_REAL_IP", true},
+                {"HTTP_X_VIA", true},
+                {"HTTP_XCNOOL_REMOTE_ADDR", true},
+                {"HTTP_XROXY_CONNECTION", true},
+                {"HTTP_XXPECT", true},
+                {"HTTP_ACCEPT", false},
+                {"HTTP_ACCEPT_ENCODING", false},
+                {"HTTP_ACCEPT_LANGUAGE", false},
+                {"HTTP_CONNECTION", false},
+                {"HTTP_HOST", false},
+                {"HTTP_USER_AGENT", false},
+                {"REMOTE_ADDR", false},
+                {"REMOTE_PORT", false},
+                {"REQUEST_METHOD", false},
+                {"REQUEST_TIME", false},
+                {"REQUEST_TIME_FLOAT", false},
+                {"REQUEST_SCHEME", false},
+                {"REQUEST_URI", false},
+
+            };
         }
 
         internal void DelAllProxy()
@@ -523,12 +561,17 @@ namespace Switch
             throw new NotImplementedException();
         }
 
-        internal void OnSendCommandWithObjectCommandHandler(object objectValue)
+        async internal void OnSendCommandWithObjectCommandHandler(object objectValue)
         {
             Proxy proxy = (Proxy)((System.Windows.Controls.Button)objectValue).DataContext;
-            //var ip = ((Proxy)((System.Windows.Controls.Button)objectValue).DataContext).Ip;
-            //Console.WriteLine(objectValue);
-            CheckProxy(proxy);
+            try
+            {
+                await CheckProxy(proxy);
+            }
+            catch(Exception ex)
+            {
+                L.LW(ex);
+            }
         }
 
 
@@ -539,7 +582,7 @@ namespace Switch
         }
 
         #endregion
-         
+
 
 
         #region INotifyPropertyChanged code
