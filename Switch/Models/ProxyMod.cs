@@ -31,11 +31,22 @@ namespace Switch
         int proxyFormatIndex;
         int proxyTypeIndex;
         ObservableCollection<Proxy> proxiesColl = new ObservableCollection<Proxy>();
+        public string profileLang;
 
         #endregion
 
 
         #region Properties
+
+        public string ProfileLang
+        {
+            get { return profileLang; }
+            set
+            {
+                profileLang = value;
+                OnPropertyChanged();
+            }
+        }
 
         public string TextProxyList
         {
@@ -81,21 +92,28 @@ namespace Switch
 
         #endregion
 
+        #region Fields
 
+        public ViewModels.ProxiesViewModel proxiesViewModel;
+        public ProxiesView view;
+
+        #endregion
 
         #region Main code
 
         public ProxyMod()
         {
             ProxyCollInit();
+            
         }
 
         internal void Run(Global global)
         {
-            
-            ProxiesView f = new ProxiesView(global.Lang, this);
-            SendMessage += f.onSendMessage;
-            f.ShowDialog();
+            proxiesViewModel = new ViewModels.ProxiesViewModel(this);
+            view = new ProxiesView(global.Lang, proxiesViewModel);
+            //ProxiesView f = new ProxiesView(global.Lang, this);
+            SendMessage += view.onSendMessage;
+            view.ShowDialog();
         }
 
         public void ProxyCollInit()
@@ -380,9 +398,94 @@ namespace Switch
             AddProxiesToMod();
         }
 
-        internal void CheckProxy()
+        internal void CheckProxy(Proxy proxy)
         {
-            throw new NotImplementedException();
+            ProxyJudge pj = new ProxyJudge();
+            string ownIp = null;
+
+                string result_ = Net.Resp(judge);
+                string ip = "";
+
+                Dictionary<string, string> values_ = pj.parse(result_);
+
+                if (values_.TryGetValue("REMOTE_ADDR", out ip))
+                {
+                    OwnIP = ip;
+                    L.LW("Found own ip: " + ip);
+                }
+                else
+                {
+                    throw new Exception("REMOTE_ADDR missing in field");
+                }
+            
+
+            if (Revealingheader == null) RevealingheaderInit();
+
+            string result = Net.Resp(judge);
+            Dictionary<string, string> values = pj.parse(result);
+
+            // Test to se if our ip adress exist in the result
+
+
+            if (result == "")
+            {
+                Anonimity = Anonimity.Unknow;
+                throw new Exception("Empty response");
+            }
+
+            if (result.IndexOf("REQUEST_URI") == -1)
+            {
+                Anonimity = Anonimity.Unknow;
+                throw new Exception("Did not find header info. The proxy may tamper with the response");
+            }
+
+            string anonymity = "";
+            // Will go troght black and whitlist to see what level of anonymity this server provides
+            foreach (KeyValuePair<string, string> value in values)
+            {
+                bool revealing;
+                if (Revealingheader.TryGetValue(value.Key, out revealing)) // Returns true.
+                {
+                    if (revealing)
+                    {
+                        anonymity = "Low";
+                        Anonimity = Anonimity.Low;
+                        // Debug: _Global.log("Found revealing header " + value.Key + " : " + value.Value);
+                        Status += "Found revealing header " + value.Key + " = " + value.Value + ". ";
+                    }
+                }
+                else
+                {
+                    anonymity = "Low";
+                    Anonimity = Anonimity.Low;
+                    // Debug: _Global.log("Have unknown header '" + value.Key + " : " + value.Value);
+                    Status += "Have unknown header '" + value.Key + " : " + value.Value + ". ";
+                }
+            }
+
+
+
+            if (result.IndexOf(Ip) != -1)
+            {
+                // Debug: _Global.log(server.Ip + ": Have your ip in results");
+                Status += "Have your ip in results. ";
+                anonymity = "None";
+                Anonimity = Anonimity.None;
+            }
+
+            // No ip and not proxy filds found
+            if (anonymity == "")
+            {
+                anonymity = "High";
+                Anonimity = Anonimity.High;
+                Status = "Ok";
+            }
+            else
+            {
+                Status = "Ok (" + Status + ")";
+            }
+
+            Console.WriteLine(Ip + " Ok: anonymity=" + anonymity + ", status=" + Status);
         }
 
         internal void DelAllProxy()
@@ -397,6 +500,46 @@ namespace Switch
 
         #endregion
 
+
+        #region Commands
+
+        internal void OnSendCommandHandler(string commandName)
+        {
+            switch (commandName)
+            {
+                case "Del":
+                    Del();
+                    return;
+                case "AddProfile":
+                    AddProfile();
+                    return;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        private void AddProfile()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void OnSendCommandWithObjectCommandHandler(object objectValue)
+        {
+            Proxy proxy = (Proxy)((System.Windows.Controls.Button)objectValue).DataContext;
+            //var ip = ((Proxy)((System.Windows.Controls.Button)objectValue).DataContext).Ip;
+            //Console.WriteLine(objectValue);
+            CheckProxy(proxy);
+        }
+
+
+
+        private void Del()
+        {
+            //ProfileLang = ProfileLang.Substring(0, ProfileLang.Length - 1);
+        }
+
+        #endregion
+         
 
 
         #region INotifyPropertyChanged code

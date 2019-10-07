@@ -10,6 +10,13 @@ using System.Collections.ObjectModel;
 using UsefulThings;
 using System.Xml.Linq;
 using System.IO;
+using MasterDevs.ChromeDevTools.Protocol.Chrome.Page;
+using MasterDevs.ChromeDevTools.Protocol.Chrome.DOM;
+using MasterDevs.ChromeDevTools;
+using Chrome = MasterDevs.ChromeDevTools.Protocol.Chrome;
+using System.Diagnostics;
+using System.Collections.Specialized;
+using ChromeModForNet;
 
 namespace Switch
 {
@@ -52,9 +59,81 @@ namespace Switch
             }
         }
 
-        internal void OnSendOpenProfileCommandHandler(string path)
+        async internal void OnSendOpenProfileCommandHandler(string path)
         {
-            throw new NotImplementedException();
+            Persona persona = Persons.Where(pers=>pers.ProfilePath==path).FirstOrDefault();
+            if(persona==null)
+            {
+                SendMessage("Не удаётся найти профиль");
+                return;
+            }
+
+            int port = GetFreeLocalPort();
+
+            string proxyString = null;
+            if(persona.Proxy!=null)
+            {
+                if(persona.Proxy.Login!=null)
+                {
+                    proxyString = persona.Proxy.Ip + ":" + persona.Proxy.Port + "@" + persona.Proxy.Login + ":" + persona.Proxy.Pwd;
+                }
+                else
+                {
+                    proxyString = persona.Proxy.Ip + ":" + persona.Proxy.Port;
+                }
+            }
+
+            ChromeMod chromeInstance = new ChromeMod();
+            CallResult<IChromeSession> result = await chromeInstance.GetChromeSession(proxyString, persona.UserAgent, false, false, persona.ProfilePath);
+            persona.ChromeInstance = chromeInstance;
+
+            /*
+            var chromeProcessFactory = new ChromeProcessFactory(new StubbornDirectoryCleaner());
+            var chromeProcess = chromeProcessFactory.Create(port, false, null, path);
+            Process pr = ((RemoteChromeProcess)chromeProcess).Process;
+            var sessionInfo = (await chromeProcess.GetSessionInfo()).LastOrDefault();
+            var chromeSessionFactory = new ChromeSessionFactory();
+            var chromeSession = chromeSessionFactory.Create(sessionInfo.WebSocketDebuggerUrl);*/
+        }
+
+        public static int GetFreeLocalPort()
+        {
+            ProcessStartInfo psiOpt = new ProcessStartInfo("cmd.exe", "/C netstat -a -n -o");
+            psiOpt.WindowStyle = ProcessWindowStyle.Hidden;
+            psiOpt.RedirectStandardOutput = true;
+            psiOpt.UseShellExecute = false;
+            psiOpt.CreateNoWindow = true;
+            // запускаем процесс
+            Process procCommand = Process.Start(psiOpt);
+            // получаем ответ запущенного процесса
+            StreamReader srIncoming = procCommand.StandardOutput;
+            // выводим результат
+            string[] ss = srIncoming.ReadToEnd().Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            StringCollection procStr = new StringCollection();
+            procCommand.WaitForExit();
+
+            for (int i = GlobalVars.MinDebugPort; i < GlobalVars.MaxDebugPort; i++)
+            {
+                bool portIsBusy = false;
+                string portSignature = ":" + i.ToString();
+                foreach (string s in ss)
+                {
+                    if (s.Contains(portSignature))
+                    {
+                        portIsBusy = true;
+                        break;
+                    }
+                }
+                if (portIsBusy)
+                {
+                    continue;
+                }
+                else
+                {
+                    return i;
+                }
+            }
+            return 0;
         }
 
         public ObservableCollection<Proxy> Proxies

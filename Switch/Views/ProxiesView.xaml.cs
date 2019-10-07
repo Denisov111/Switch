@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using Switch.ViewModels;
 
 namespace Switch
 {
@@ -21,38 +22,36 @@ namespace Switch
     /// </summary>
     public partial class ProxiesView : MetroWindow
     {
-        ProxyMod proxyMod;
 
-        public ProxiesView(Lang lang, ProxyMod proxyMod)
+        public ProxiesView(Lang lang, ProxiesViewModel proxiesViewModel)
         {
             InitializeComponent();
-            this.proxyMod = proxyMod;
             DataContext = new
             {
                 Lang = lang,
-                ProxyMod = proxyMod
+                ProxiesViewModel = proxiesViewModel
             };
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            proxyMod.AddProxyList();
-        }
+        //private void Button_Click(object sender, RoutedEventArgs e)
+        //{
+        //    proxyMod.AddProxyList();
+        //}
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            proxyMod.AddProxyFromFile();
-        }
+        //private void Button_Click_1(object sender, RoutedEventArgs e)
+        //{
+        //    proxyMod.AddProxyFromFile();
+        //}
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            proxyMod.CheckProxy();
-        }
+        //private void Button_Click_2(object sender, RoutedEventArgs e)
+        //{
+        //    proxyMod.CheckProxy();
+        //}
 
-        private void Button_Click_3(object sender, RoutedEventArgs e)
-        {
-            proxyMod.DelAllProxy();
-        }
+        //private void Button_Click_3(object sender, RoutedEventArgs e)
+        //{
+        //    proxyMod.DelAllProxy();
+        //}
 
         async internal void onSendMessage(string message)
         {

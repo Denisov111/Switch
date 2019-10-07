@@ -8,10 +8,20 @@
                       xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         Title="ProxiesView" Height="450" Width="800">
     <Grid>
-        
-        <StackPanel HorizontalAlignment="Left" Height="399" Margin="10,10,0,0" VerticalAlignment="Top" Width="780">
+
+        <Grid.Resources>
+
+            <DataTemplate x:Key="CheckProxyButton">
+                <Button Content="Проверить" Tag="{Binding Id}" Style="{StaticResource AccentedSquareButtonStyle}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Self}}" 
+                        Command="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=DataContext.ProxiesViewModel.ToBlackListUniversalCommand}"/>
+            </DataTemplate>
+
+            </Grid.Resources>
+
+                <StackPanel HorizontalAlignment="Left" Height="399" Margin="10,10,0,0" VerticalAlignment="Top" Width="780">
             <Border Background="GhostWhite" BorderBrush="Gainsboro" BorderThickness="1" Margin="2">
-                <DataGrid ItemsSource="{Binding ProxyMod.ProxiesColl}"
+                <DataGrid ItemsSource="{Binding ProxiesViewModel.ProxiesColl}"
                     Height="203"
                            AutoGenerateColumns="False"
                           IsReadOnly="True">
@@ -22,8 +32,8 @@
                         <DataGridTextColumn Header="Пароль" Binding="{Binding Pwd}" DisplayIndex="3"/>
                         <DataGridTextColumn Header="Тип" Binding="{Binding ProxyProtocol}" DisplayIndex="4"/>
                         <DataGridTextColumn Header="Анонимность" Binding="{Binding Anonimity}" DisplayIndex="5"/>
-                        <DataGridTextColumn Header="Состояние" Binding="{Binding ProxyWorkStatus}" DisplayIndex="6"/>
-                        
+                        <DataGridTextColumn Header="Состояние" Binding="{Binding Status}" DisplayIndex="6"/>
+                        <DataGridTemplateColumn Header="Проверить" DisplayIndex="7" CellTemplate="{StaticResource CheckProxyButton}"/>
                         
                     </DataGrid.Columns>
                 </DataGrid>
@@ -36,6 +46,7 @@
                     <ComboBoxItem Content="ip:port|login:password" HorizontalAlignment="Left" Width="209"/>
                     <ComboBoxItem Content="login:password@ip:port" HorizontalAlignment="Left" Width="209"/>
                     <ComboBoxItem Content="login:password:ip:port" HorizontalAlignment="Left" Width="209"/>
+                    <ComboBoxItem Content="ip:port" HorizontalAlignment="Left" Width="209"/>
                 </ComboBox>
                 <ComboBox SelectedIndex="{Binding ProxyMod.ProxyTypeIndex}" Width="80" SelectedValuePath="Content" Margin="2">
                     <ComboBoxItem  Content="HTTP" />
@@ -48,10 +59,10 @@
                      Height="113" TextWrapping="Wrap" AcceptsReturn="True" Margin="2" VerticalScrollBarVisibility="Auto"
                      Controls:TextBoxHelper.Watermark="ip:port:login:password&#x0a;ip:port:login:password&#x0a;ip:port:login:password&#x0a;ip:port:login:password&#x0a;"/>
             <StackPanel Height="42" Orientation="Horizontal" Margin="2">
-                <Button Content="{Binding Lang.AddProxy}" Margin="2" Click="Button_Click"/>
+                <!--<Button Content="{Binding Lang.AddProxy}" Margin="2" Click="Button_Click"/>
                 <Button Content="{Binding Lang.AddProxyFromFile}" Margin="2" Click="Button_Click_1"/>
                 <Button Content="{Binding Lang.CheckProxy}" Margin="2" Click="Button_Click_2"/>
-                <Button Content="{Binding Lang.DelAllProxy}" Margin="2" Click="Button_Click_3"/>
+                <Button Content="{Binding Lang.DelAllProxy}" Margin="2" Click="Button_Click_3"/>-->
             </StackPanel>
         </StackPanel>
 

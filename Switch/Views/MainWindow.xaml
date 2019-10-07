@@ -27,7 +27,7 @@
             </DataTemplate>-->
 
             <DataTemplate x:Key="OpenProfileButton">
-                <Button Content="Проверить" CommandParameter="{Binding ProfilePath}" 
+                <Button Content="Открыть" CommandParameter="{Binding ProfilePath}" 
                         Style="{StaticResource AccentedSquareButtonStyle}" 
                         Command="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=DataContext.Context.OpenProfileCommand}"/>
             </DataTemplate>

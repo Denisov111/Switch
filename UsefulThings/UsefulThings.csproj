@@ -44,6 +44,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="xNet, Version=3.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\xNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\Ad.cs" />
@@ -53,6 +57,7 @@
     <Compile Include="Entities\Proxy.cs" />
     <Compile Include="Func\Helpers.cs" />
     <Compile Include="Func\L.cs" />
+    <Compile Include="Func\Net.cs" />
     <Compile Include="Interfaces\IAcc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

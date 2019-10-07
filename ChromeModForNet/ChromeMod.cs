@@ -50,7 +50,7 @@ namespace ChromeModForNet
 
         #region Init
 
-        async public Task<CallResult<IChromeSession>> GetChromeSession(string proxisString, string ua, bool isDebug = false, bool headless = true)
+        async public Task<CallResult<IChromeSession>> GetChromeSession(string proxisString, string ua, bool isDebug = false, bool headless = true, string profilePath = null)
         {
             L.Trace();
             CallResult<IChromeSession> chromeSessionResult = new CallResult<IChromeSession>();
@@ -65,11 +65,11 @@ namespace ChromeModForNet
                 if (proxy != null)
                 {
                     string ipPort = proxy.Ip + ":" + proxy.Port;
-                    chromeProcess = chromeProcessFactory.Create(port, headless, ipPort);
+                    chromeProcess = chromeProcessFactory.Create(port, headless, ipPort, profilePath);
                 }
                 else
                 {
-                    chromeProcess = chromeProcessFactory.Create(port, headless);
+                    chromeProcess = chromeProcessFactory.Create(port, headless, null, profilePath);
                 }
 
                 var sessionInfoArray = await chromeProcess.GetSessionInfo();

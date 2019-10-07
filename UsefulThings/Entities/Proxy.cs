@@ -28,6 +28,7 @@ namespace UsefulThings
 
     public enum ProxyWorkStatus
     {
+        Unknow,
         IsAvailable,
         NotAvailable
     }

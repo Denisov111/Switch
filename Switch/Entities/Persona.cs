@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UsefulThings;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using ChromeModForNet;
 
 namespace Switch
 {
@@ -16,6 +17,7 @@ namespace Switch
         public string ProfilePath { get; set; }
         public string UserAgent { get; set; }
         public Proxy Proxy { get; set; }
+        public ChromeMod ChromeInstance { get; set; }
 
 
         public override string ToString()
