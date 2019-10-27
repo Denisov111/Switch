@@ -7,6 +7,7 @@ using UsefulThings;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using ChromeModForNet;
+using System.Drawing;
 
 namespace Switch
 {
@@ -18,11 +19,14 @@ namespace Switch
         public string UserAgent { get; set; }
         public Proxy Proxy { get; set; }
         public ChromeMod ChromeInstance { get; set; }
+        public string HashString { get; set; }
+        public Bitmap Avatar { get; set; }
 
 
         public override string ToString()
         {
-            return Title + " " + Description + " " + Proxy.ToString();
+            string proxy = Proxy == null ? "" : Proxy.ToString();
+            return Title + " " + Description + " " + proxy;
         }
     }
 }

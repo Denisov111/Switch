@@ -434,89 +434,100 @@ namespace Switch
             }
         }
 
-        async internal Task CheckProxy(Proxy proxy)
+        async public Task CheckProxy(Proxy proxy)
         {
-            ProxyJudge pj = new ProxyJudge();
-            string ownIp = null;
-            string judge = "http://azenv.net/";
-
-            string result_ = await Net.RespAsync(judge);
-            if (String.IsNullOrEmpty(result_))
+            try
             {
-                proxy.Status = ProxyWorkStatus.NotAvailable;
-                return;
-            }
-            else
-            {
-                proxy.Status = ProxyWorkStatus.IsAvailable;
-            }
-            string ip = "";
+                ProxyJudge pj = new ProxyJudge();
+                string ownIp = null;
+                string judge = "http://azenv.net/";
 
-            Dictionary<string, string> values_ = pj.parse(result_);
-
-            if (values_.TryGetValue("REMOTE_ADDR", out ip))
-            {
-                ownIp = ip;
-                L.LW("Found own ip: " + ip);
-            }
-            else
-            {
-                throw new Exception("REMOTE_ADDR missing in field");
-            }
-
-            if (Revealingheader == null) RevealingheaderInit();
-
-            string result = await Net.RespAsync(judge, proxy);
-            Dictionary<string, string> values = pj.parse(result);
-
-            // Test to se if our ip adress exist in the result
-
-            proxy.Anonimity = Anonimity.Unknow;
-            if (result == "")
-            {
-                proxy.Anonimity = Anonimity.Unknow;
-                throw new Exception("Empty response");
-            }
-
-            if (result.IndexOf("REQUEST_URI") == -1)
-            {
-                proxy.Anonimity = Anonimity.Unknow;
-                throw new Exception("Did not find header info. The proxy may tamper with the response");
-            }
-
-            // Will go troght black and whitlist to see what level of anonymity this server provides
-            foreach (KeyValuePair<string, string> value in values)
-            {
-                bool revealing;
-                if (Revealingheader.TryGetValue(value.Key, out revealing)) // Returns true.
+                //здесь узнаём свой настоящий ip
+                string result_ = await Net.RespAsync(judge);
+                if (String.IsNullOrEmpty(result_))
                 {
-                    if (revealing)
-                    {
-                        proxy.Anonimity = Anonimity.Low;
-                        // Debug: _Global.log("Found revealing header " + value.Key + " : " + value.Value);
-                        L.LW("Found revealing header " + value.Key + " = " + value.Value + ". ");
-                    }
+                    proxy.Status = ProxyWorkStatus.NotAvailable;
+                    return;
                 }
                 else
                 {
-                    proxy.Anonimity = Anonimity.Low;
-                    // Debug: _Global.log("Have unknown header '" + value.Key + " : " + value.Value);
-                    L.LW("Have unknown header '" + value.Key + " : " + value.Value + ". ");
+                    proxy.Status = ProxyWorkStatus.IsAvailable;
+                }
+                string ip = "";
+
+                Dictionary<string, string> values_ = pj.parse(result_);
+
+                if (values_.TryGetValue("REMOTE_ADDR", out ip))
+                {
+                    ownIp = ip;
+                    L.LW("Found own ip: " + ip);
+                }
+                else
+                {
+                    throw new Exception("REMOTE_ADDR missing in field");
+                }
+
+                if (Revealingheader == null) RevealingheaderInit();
+
+                //здесь проверяем работоспособность и анонимность прокси
+                string result = await Net.RespAsync(judge, proxy, 1);
+                Dictionary<string, string> values = null;
+                if (result!=null)
+                    values = pj.parse(result);
+
+                // Test to se if our ip adress exist in the result
+
+                proxy.Anonimity = Anonimity.Unknow;
+                if (result == null)
+                {
+                    proxy.Anonimity = Anonimity.Unknow;
+                    proxy.Status = ProxyWorkStatus.NotAvailable;
+                    throw new Exception("Empty response");
+                }
+
+                if (result.IndexOf("REQUEST_URI") == -1)
+                {
+                    proxy.Anonimity = Anonimity.Unknow;
+                    throw new Exception("Did not find header info. The proxy may tamper with the response");
+                }
+
+                // Will go troght black and whitlist to see what level of anonymity this server provides
+                foreach (KeyValuePair<string, string> value in values)
+                {
+                    bool revealing;
+                    if (Revealingheader.TryGetValue(value.Key, out revealing)) // Returns true.
+                    {
+                        if (revealing)
+                        {
+                            proxy.Anonimity = Anonimity.Low;
+                            // Debug: _Global.log("Found revealing header " + value.Key + " : " + value.Value);
+                            L.LW("Found revealing header " + value.Key + " = " + value.Value + ". ");
+                        }
+                    }
+                    else
+                    {
+                        proxy.Anonimity = Anonimity.Low;
+                        // Debug: _Global.log("Have unknown header '" + value.Key + " : " + value.Value);
+                        L.LW("Have unknown header '" + value.Key + " : " + value.Value + ". ");
+                    }
+                }
+
+                if (result.IndexOf(ownIp) != -1)
+                {
+                    // Debug: _Global.log(server.Ip + ": Have your ip in results");
+                    L.LW("Have your ip in results. ");
+                    proxy.Anonimity = Anonimity.None;
+                }
+
+                if (proxy.Anonimity == Anonimity.Unknow)
+                {
+                    proxy.Anonimity = Anonimity.High;
                 }
             }
-
-            if (result.IndexOf(ownIp) != -1)
+            catch(Exception ex)
             {
-                // Debug: _Global.log(server.Ip + ": Have your ip in results");
-                L.LW("Have your ip in results. ");
-                proxy.Anonimity = Anonimity.None;
+                L.LW(ex);
             }
-
-            if (proxy.Anonimity == Anonimity.Unknow)
-            {
-                proxy.Anonimity = Anonimity.High;
-            }
-            Console.WriteLine(proxy.Anonimity);
         }
 
         private void RevealingheaderInit()

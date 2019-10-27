@@ -22,6 +22,7 @@ namespace Switch
         string addProxyFromFile = "Добавить прокси из файла";
         string checkProxy = "Проверить все прокси";
         string delAllProxy = "Удалить все прокси";
+        string checkAllProxyLang = "Проверить все прокси";
         //string createProfileLang;
         //string proxySettingsLang;
 
@@ -43,6 +44,16 @@ namespace Switch
             set
             {
                 proxySettingsLang = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string CheckAllProxyLang
+        {
+            get { return checkAllProxyLang; }
+            set
+            {
+                checkAllProxyLang = value;
                 OnPropertyChanged();
             }
         }

@@ -49,6 +49,19 @@ namespace Switch
             }
         }
 
+        internal void OnSendEditProfileCommandHandler(string path)
+        {
+            Persona persona = Persons.Where(pers => pers.ProfilePath == path).FirstOrDefault();
+        }
+
+        async internal void OnSendCheckProxyCommandHandler(string path)
+        {
+            Persona persona = Persons.Where(pers => pers.ProfilePath == path).FirstOrDefault();
+            if (persona.Proxy == null) return;
+            await proxyMod.CheckProxy(persona.Proxy);
+            SendMessage("Анонимность: "+ persona.Proxy.Anonimity.ToString() + " доступность: "+ persona.Proxy.Status.ToString());
+        }
+
         public ObservableCollection<Persona> Persons
         {
             get { return persons; }
@@ -71,7 +84,8 @@ namespace Switch
             int port = GetFreeLocalPort();
 
             string proxyString = null;
-            if(persona.Proxy!=null)
+            string proxyProtocol = null;
+            if (persona.Proxy!=null)
             {
                 if(persona.Proxy.Login!=null)
                 {
@@ -81,10 +95,11 @@ namespace Switch
                 {
                     proxyString = persona.Proxy.Ip + ":" + persona.Proxy.Port;
                 }
+                proxyProtocol = persona.Proxy.ProxyProtocol.ToString().ToLower();
             }
 
             ChromeMod chromeInstance = new ChromeMod();
-            CallResult<IChromeSession> result = await chromeInstance.GetChromeSession(proxyString, persona.UserAgent, false, false, persona.ProfilePath);
+            CallResult<IChromeSession> result = await chromeInstance.GetChromeSession(proxyString, persona.UserAgent, proxyProtocol, false, false, persona.ProfilePath);
             persona.ChromeInstance = chromeInstance;
 
             /*
@@ -226,9 +241,25 @@ namespace Switch
                 case "ProxySettings":
                     ProxySettings();
                     return;
+                case "CheckAllProxy":
+                    CheckAllProxy();
+                    return;
                 default:
                     throw new NotImplementedException();
             }
+        }
+
+        async private void CheckAllProxy()
+        {
+            string mess = null;
+            for(int i=0;i< Persons.Count;i++)
+            {
+                if (Persons[i].Proxy == null) continue;
+                await proxyMod.CheckProxy(Persons[i].Proxy);
+                mess += Persons[i].Proxy.Ip + ":"+Persons[i].Proxy.Port+ " : " + "анонимность: " + Persons[i].Proxy.Anonimity.ToString() + " доступность: " + Persons[i].Proxy.Status.ToString()+"\n";
+            }
+            if(mess!=null)
+                SendMessage(mess);
         }
 
         private void ProxySettings()

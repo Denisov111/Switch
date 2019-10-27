@@ -46,12 +46,13 @@ namespace UsefulThings
             return response;
         }
 
-        async public static Task<string> RespAsync(string requestPath, Proxy proxy = null)   
+        async public static Task<string> RespAsync(string requestPath, Proxy proxy = null, int attemptCount=5)   
         {
+
             if (proxy == null)
             {
                 string response = string.Empty;
-                for (int i = 0; i <= 5; i++)
+                for (int i = 0; i < attemptCount; i++)
                 {
                     try
                     {
@@ -75,7 +76,7 @@ namespace UsefulThings
             else
             {
                 string response = string.Empty;
-                for (int i = 0; i <= 5; i++)
+                for (int i = 0; i < attemptCount; i++)
                 {
                     try
                     {
@@ -85,7 +86,18 @@ namespace UsefulThings
                         request.Proxy = client;
 
                         string content = "";
-                        await Task.Run(() => content = request.Get(requestPath).ToString());
+                        await Task.Run(() =>
+                        {
+                            try
+                            {
+                                content = request.Get(requestPath).ToString();
+                            }
+                            catch (Exception ex)
+                            {
+                                L.LW(ex);
+                            }
+
+                        });
                         if (content == "")
                         {
                             await Task.Delay(500);

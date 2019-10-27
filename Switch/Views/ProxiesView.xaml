@@ -12,9 +12,9 @@
         <Grid.Resources>
 
             <DataTemplate x:Key="CheckProxyButton">
-                <Button Content="Проверить" Tag="{Binding Id}" Style="{StaticResource AccentedSquareButtonStyle}"
+                <Button Content="Проверить" Style="{StaticResource AccentedSquareButtonStyle}"
                         CommandParameter="{Binding RelativeSource={RelativeSource Self}}" 
-                        Command="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=DataContext.ProxiesViewModel.ToBlackListUniversalCommand}"/>
+                        Command="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=DataContext.ProxiesViewModel.CheckProxyCommand}"/>
             </DataTemplate>
 
             </Grid.Resources>

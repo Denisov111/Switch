@@ -96,7 +96,7 @@ namespace Switch.ViewModels
             }
         }
 
-        public RelayCommand ToBlackListUniversalCommand
+        public RelayCommand CheckProxyCommand
         {
             get
             {

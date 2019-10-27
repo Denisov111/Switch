@@ -34,7 +34,8 @@ namespace Switch.Views
         
         async internal void onSendMessage(string message)
         {
-            await this.ShowMessageAsync("Ошибка", message);
+            //await this.ShowMessageAsync("Ошибка", message);
+            await this.ShowMessageAsync("", message);
         }
     }
 }

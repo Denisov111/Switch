@@ -89,17 +89,17 @@ namespace Switch.ViewModels
             }
         }
 
-        public RelayCommand ToBlackListUniversalCommand
-        {
-            get
-            {
-                RelayCommand rc = new RelayCommand(obj =>
-                {
-                    OnSendCommandWithObject(obj);
-                });
-                return rc;
-            }
-        }
+        //public RelayCommand ToBlackListUniversalCommand
+        //{
+        //    get
+        //    {
+        //        RelayCommand rc = new RelayCommand(obj =>
+        //        {
+        //            OnSendCommandWithObject(obj);
+        //        });
+        //        return rc;
+        //    }
+        //}
 
         #endregion
 
