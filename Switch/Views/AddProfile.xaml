@@ -6,25 +6,43 @@
         xmlns:local="clr-namespace:Switch.Views"
         mc:Ignorable="d"
                       xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
-        Title="AddProfile" Height="311.642" Width="368.806" WindowStartupLocation="CenterOwner">
+        Title="AddProfile" Height="414.642" Width="368.806" WindowStartupLocation="CenterOwner">
     <Grid>
-        <StackPanel HorizontalAlignment="Left" Height="261" Margin="10,10,0,0" VerticalAlignment="Top" Width="341">
+        <StackPanel HorizontalAlignment="Left" Height="396" Margin="10,10,0,-78" VerticalAlignment="Top" Width="341">
+
+            <StackPanel Orientation="Horizontal">
+                <Image Source="{Binding Avatar}"
+                       Height="50" Width="50"/>
+                <Button Content="xxxxxxxxxx"
+                        Command="{Binding UniversalCommand}" CommandParameter="UpdateAvatar"/>
+            </StackPanel>
+            
+
             <TextBox Text="{Binding Persona.Title}" 
                      Height="23" TextWrapping="NoWrap" Margin="0,3" Controls:TextBoxHelper.Watermark="Title"/>
             <TextBox Text="{Binding Persona.Description}"
                      Height="100" TextWrapping="NoWrap" Margin="0,3" Controls:TextBoxHelper.Watermark="Description"/>
             <TextBox Text="{Binding Persona.UserAgent}"
                      Height="23" TextWrapping="NoWrap" Margin="0,3" Controls:TextBoxHelper.Watermark="User-agent"/>
+
             <StackPanel Orientation="Horizontal">
-                
                 <CheckBox IsChecked="{Binding IsUseProxy}" 
                           Content="использовать прокси"/>
                 <ComboBox ItemsSource="{Binding Proxies}"
                           SelectedItem="{Binding Proxy}"
                           Width="190"  Margin="10,3"/>
             </StackPanel>
-            <Button Content="Создать"
+
+            <StackPanel Orientation="Horizontal" Margin="0,3,0,3">
+                <Label Content="Текущий прокси профиля:  "/>
+                <Label Content="{Binding Proxy}"/>
+                <Button Content="X" Margin="15,0,0,0"
+                        Command="{Binding UniversalCommand}" CommandParameter="DelProxyFromProfile"/>
+            </StackPanel>
+
+            <Button Content="Создать / Изменить"
                     Command="{Binding UniversalCommand}" CommandParameter="AddPerson"/>
+            
 
         </StackPanel>
 

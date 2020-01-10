@@ -80,12 +80,14 @@
     <Compile Include="Models\AddProfiler.cs" />
     <Compile Include="Models\AvatarGen.cs" />
     <Compile Include="Models\MVVMModelTemplate.cs" />
+    <Compile Include="Models\PersonaEditor.cs" />
     <Compile Include="Models\ProxyJudge.cs" />
     <Compile Include="Models\ProxyMod.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="ViewModels\AddProfileViewModel.cs" />
     <Compile Include="ViewModels\GlobalViewModel.cs" />
     <Compile Include="ViewModels\MVVMModelTemplateViewModel.cs" />
+    <Compile Include="ViewModels\PersonaEditorViewModel.cs" />
     <Compile Include="ViewModels\ProxiesViewModel.cs" />
     <Compile Include="Views\AddProfile.xaml.cs">
       <DependentUpon>AddProfile.xaml</DependentUpon>
@@ -94,6 +96,9 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MVVMModelTemplateView.cs" />
+    <Compile Include="Views\PersonaEditorView.xaml.cs">
+      <DependentUpon>PersonaEditorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ProxiesView.xaml.cs">
       <DependentUpon>ProxiesView.xaml</DependentUpon>
     </Compile>
@@ -111,6 +116,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PersonaEditorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

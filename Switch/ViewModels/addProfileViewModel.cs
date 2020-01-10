@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using UsefulThings;
+using System.Windows.Media.Imaging;
 
 namespace Switch.ViewModels
 {
@@ -52,6 +53,16 @@ namespace Switch.ViewModels
             set
             {
                 addProfiler.Proxy = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public BitmapImage Avatar
+        {
+            get { return addProfiler.Avatar; }
+            set
+            {
+                addProfiler.Avatar = value;
                 OnPropertyChanged();
             }
         }

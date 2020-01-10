@@ -8,30 +8,26 @@ using System.Runtime.CompilerServices;
 
 namespace Switch.ViewModels
 {
-    public class MVVMModelTemplateViewModel : INotifyPropertyChanged
+    public class PersonaEditorViewModel : INotifyPropertyChanged
     {
-        private MVVMModelTemplate template;
+        public PersonaEditor personaEditor;
 
-
-
-
-        public string TemplateVar
+        public Persona Persona
         {
-            get { return template.TemplateVar; }
+            get { return personaEditor.Persona; }
             set
             {
-                template.TemplateVar = value;
+                personaEditor.Persona = value;
                 OnPropertyChanged();
             }
         }
 
-        public MVVMModelTemplateViewModel(MVVMModelTemplate template)
+        public PersonaEditorViewModel(PersonaEditor personaEditor)
         {
-            this.template = template;
-            OnSendCommand += template.OnSendCommandHandler;
-            OnSendCommandWithObject += template.OnSendCommandWithObjectCommandHandler;
+            this.personaEditor = personaEditor;
+            OnSendCommand += personaEditor.OnSendCommandHandler;
+            OnSendCommandWithObject += personaEditor.OnSendCommandWithObjectCommandHandler;
         }
-
 
         #region Commands
 

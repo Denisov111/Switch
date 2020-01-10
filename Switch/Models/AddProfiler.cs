@@ -9,9 +9,18 @@ using System.Collections.ObjectModel;
 using UsefulThings;
 using System.IO;
 using System.Xml.Linq;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Windows.Media.Imaging;
 
 namespace Switch
 {
+    public enum ProfilerMode
+    {
+        Add,
+        Edit
+    }
+
     public class AddProfiler : INotifyPropertyChanged
     {
         private Global global;
@@ -27,6 +36,7 @@ namespace Switch
         bool isUseProxy;
         ObservableCollection<Proxy> proxies;
         Proxy proxy;
+        BitmapImage avatar;
 
         #endregion
 
@@ -73,10 +83,21 @@ namespace Switch
             }
         }
 
-        #endregion
+        public BitmapImage Avatar
+        {
+            get {return avatar;}
+            set
+            {
+                avatar = value;
+                OnPropertyChanged();
+            }
+        }
 
         #endregion
 
+        #endregion
+
+        public ProfilerMode ProfilerMode;
 
         public AddProfiler(Global global)
         {
@@ -89,6 +110,29 @@ namespace Switch
             view.ShowDialog();
         }
 
+        public AddProfiler(Global global, Persona persona)
+        {
+            ProfilerMode = ProfilerMode.Edit;
+            this.persona = persona;
+            this.global = global;
+            addProfileViewModel = new ViewModels.AddProfileViewModel(this, global);
+            view = new Views.AddProfile(addProfileViewModel);
+            Proxies = global.Proxies;
+
+            //нужно сделать, чтобы если на акке был прокси, то его можно было удалить
+            if(persona.Proxy!=null)
+            {
+                var pr = Proxies.Where(p => p.Ip == persona.Proxy.Ip && p.Port == persona.Proxy.Port).FirstOrDefault();
+                if(pr!=null)
+                    Proxy = pr;
+                else
+                    Proxy = persona.Proxy;
+            }
+           
+            
+            view.ShowDialog();
+        }
+
         internal void OnSendCommandHandler(string commandName)
         {
             switch (commandName)
@@ -96,18 +140,59 @@ namespace Switch
                 case "AddPerson":
                     AddPerson();
                     return;
+                case "DelProxyFromProfile":
+                    DelProxyFromProfile();
+                    return;
+                case "UpdateAvatar":
+                    UpdateAvatar();
+                    return;
                 default:
                     throw new NotImplementedException();
             }
         }
 
+        private void UpdateAvatar()
+        {
+            string salt = AvatarGen.RandomString(40);
+            string hex = AvatarGen.GenerateHash(salt);
+            Bitmap avaBitmap = AvatarGen.GenerateAvatar(hex);
+
+            using (MemoryStream memory = new MemoryStream())
+            {
+                avaBitmap.Save(memory, ImageFormat.Png);
+                memory.Position = 0;
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                Avatar = bitmapImage;
+            }
+        }
+
+        private void DelProxyFromProfile()
+        {
+            Proxy = null;
+        }
+
         private void AddPerson()
         {
-            if (isUseProxy) Persona.Proxy = Proxy;
-            Persona.ProfilePath = Path.GetRandomFileName();
-            global.Persons.Add(Persona);
-            SavePersons();
-            view.Close();
+            if(ProfilerMode == ProfilerMode.Add)
+            {
+                if (isUseProxy) Persona.Proxy = Proxy;
+                Persona.ProfilePath = Path.GetRandomFileName();
+                global.Persons.Add(Persona);
+                SavePersons();
+                view.Close();
+            }
+
+            if (ProfilerMode == ProfilerMode.Edit)
+            {
+                Persona.Proxy = Proxy;
+                SavePersons();
+                view.Close();
+            }
+            
         }
 
         private void SavePersons()

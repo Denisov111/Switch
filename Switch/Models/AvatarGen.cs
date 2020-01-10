@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Drawing;
-using System.Drawing;
 
-namespace Switch.Models
+namespace Switch
 {
     class AvatarGen
     {
@@ -96,6 +95,21 @@ namespace Switch.Models
                              .Where(x => x % 2 == 0)
                              .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
                              .ToArray();
+        }
+
+        private static Random random = new Random((int)DateTime.Now.Ticks);
+        public static string RandomString(int length)
+        {
+            const string pool = "abcdefghijklmnopqrstuvwxyz0123456789";
+            var builder = new StringBuilder();
+
+            for (var i = 0; i < length; i++)
+            {
+                var c = pool[random.Next(0, pool.Length)];
+                builder.Append(c);
+            }
+
+            return builder.ToString();
         }
     }
 }

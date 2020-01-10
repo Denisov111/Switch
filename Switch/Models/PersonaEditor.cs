@@ -8,26 +8,26 @@ using System.Runtime.CompilerServices;
 
 namespace Switch
 {
-    public class MVVMModelTemplate : INotifyPropertyChanged
+    public class PersonaEditor : INotifyPropertyChanged
     {
         #region MVVM
 
 
         #region Fields
 
-        public string templateVar;
+        public Persona persona;
 
         #endregion
 
 
         #region Properties
 
-        public string TemplateVar
+        public Persona Persona
         {
-            get { return templateVar; }
+            get { return persona; }
             set
             {
-                templateVar = value;
+                persona = value;
                 OnPropertyChanged();
             }
         }
@@ -38,15 +38,17 @@ namespace Switch
 
         #region fields
 
-        public ViewModels.MVVMModelTemplateViewModel mVVMModelTemplateViewModel;
-        public Views.MVVMModelTemplateView view;
+        public ViewModels.PersonaEditorViewModel personaEditorViewModel;
+        public Views.PersonaEditorView view;
 
         #endregion
 
-        public void Run()
+        public void Run(Persona persona)
         {
-            mVVMModelTemplateViewModel = new ViewModels.MVVMModelTemplateViewModel(this);
-            view = new Views.MVVMModelTemplateView(mVVMModelTemplateViewModel);
+            personaEditorViewModel = new ViewModels.PersonaEditorViewModel(this);
+            view = new Views.PersonaEditorView(personaEditorViewModel);
+            this.Persona = persona;
+            view.ShowDialog();
         }
 
         #region Commands
@@ -78,7 +80,7 @@ namespace Switch
 
         private void Del()
         {
-            TemplateVar = TemplateVar.Substring(0, TemplateVar.Length - 1);
+            
         }
 
         #endregion
@@ -90,9 +92,10 @@ namespace Switch
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
-            mVVMModelTemplateViewModel.OnPropertyChanged(prop);
+            personaEditorViewModel.OnPropertyChanged(prop);
         }
 
         #endregion
+
     }
 }

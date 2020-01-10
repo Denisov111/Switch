@@ -11,17 +11,39 @@ using System.Drawing;
 
 namespace Switch
 {
-    public class Persona
+    public class Persona : INotifyPropertyChanged
     {
+        Proxy proxy;
+
         public string Title { get; set; }
         public string Description { get; set; }
         public string ProfilePath { get; set; }
         public string UserAgent { get; set; }
-        public Proxy Proxy { get; set; }
+        public Proxy Proxy
+        {
+            get { return proxy; }
+            set
+            {
+                proxy = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ChromeMod ChromeInstance { get; set; }
         public string HashString { get; set; }
         public Bitmap Avatar { get; set; }
+        public string AvatarPath { get; set; }
 
+        #region INotifyPropertyChanged code
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName]string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+
+        #endregion
 
         public override string ToString()
         {

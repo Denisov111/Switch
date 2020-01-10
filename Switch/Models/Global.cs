@@ -52,6 +52,8 @@ namespace Switch
         internal void OnSendEditProfileCommandHandler(string path)
         {
             Persona persona = Persons.Where(pers => pers.ProfilePath == path).FirstOrDefault();
+            AddProfiler ap = new AddProfiler(this, persona);
+            
         }
 
         async internal void OnSendCheckProxyCommandHandler(string path)

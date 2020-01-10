@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:Switch.Views"
                       xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
-        Title="Switch" Height="450" Width="750">
+        Title="Switch" Height="450" Width="750"
+                      WindowStartupLocation="CenterScreen">
     <Grid>
 
         <Grid.Resources>
