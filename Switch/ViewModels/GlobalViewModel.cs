@@ -44,6 +44,7 @@ namespace Switch.ViewModels
             OnSendOpenProfileCommand+=global.OnSendOpenProfileCommandHandler;
             OnSendCheckProxyCommand += global.OnSendCheckProxyCommandHandler;
             OnSendEditProfileCommand += global.OnSendEditProfileCommandHandler;
+            OnSendDelProfileCommand+=global.OnSendDelProfileCommandHandler;
         }
 
 
@@ -54,6 +55,7 @@ namespace Switch.ViewModels
         public event CommandHandler OnSendOpenProfileCommand;
         public event CommandHandler OnSendCheckProxyCommand;
         public event CommandHandler OnSendEditProfileCommand;
+        public event CommandHandler OnSendDelProfileCommand;
 
         public delegate void CommandHandlerWithObject(object objectValue);
         public event CommandHandlerWithObject OnSendCommandWithObject;
@@ -105,6 +107,19 @@ namespace Switch.ViewModels
                 {
                     string path = obj.ToString();
                     OnSendEditProfileCommand(path);
+                });
+                return rc;
+            }
+        }
+
+        public RelayCommand DelProfileCommand
+        {
+            get
+            {
+                RelayCommand rc = new RelayCommand(obj =>
+                {
+                    string path = obj.ToString();
+                    OnSendDelProfileCommand(path);
                 });
                 return rc;
             }

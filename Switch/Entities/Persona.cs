@@ -14,6 +14,7 @@ namespace Switch
     public class Persona : INotifyPropertyChanged
     {
         Proxy proxy;
+        string hashString;
 
         public string Title { get; set; }
         public string Description { get; set; }
@@ -30,7 +31,15 @@ namespace Switch
         }
 
         public ChromeMod ChromeInstance { get; set; }
-        public string HashString { get; set; }
+        public string HashString
+        {
+            get { return hashString; }
+            set
+            {
+                hashString = value;
+                OnPropertyChanged();
+            }
+        }
         public Bitmap Avatar { get; set; }
         public string AvatarPath { get; set; }
 

@@ -56,6 +56,17 @@ namespace Switch
             
         }
 
+        internal void OnSendDelProfileCommandHandler(string path)
+        {
+            Persona persona = Persons.Where(pers => pers.ProfilePath == path).FirstOrDefault();
+            try
+            {
+                Persons.Remove(persona);
+                SavePersons();
+            }
+            catch { }
+        }
+
         async internal void OnSendCheckProxyCommandHandler(string path)
         {
             Persona persona = Persons.Where(pers => pers.ProfilePath == path).FirstOrDefault();
@@ -111,6 +122,38 @@ namespace Switch
             var sessionInfo = (await chromeProcess.GetSessionInfo()).LastOrDefault();
             var chromeSessionFactory = new ChromeSessionFactory();
             var chromeSession = chromeSessionFactory.Create(sessionInfo.WebSocketDebuggerUrl);*/
+        }
+
+        public void SavePersons()
+        {
+            string profilesFile = @"profiles.xml";
+            XDocument doc = new XDocument();
+            XElement ps = new XElement("profiles");
+            doc.Add(ps);
+
+            foreach (Persona pers in Persons)
+            {
+                XElement persona = new XElement("profile",
+                                new XElement("title", pers.Title),
+                                new XElement("description", pers.Description),
+                                new XElement("profile_path", pers.ProfilePath),
+                                new XElement("user_agent", pers.UserAgent),
+                                new XElement("hex", pers.HashString));
+
+                if (pers.Proxy != null)
+                {
+                    XElement proxy = new XElement("proxy",
+                                new XElement("ip", pers.Proxy.Ip),
+                                new XElement("port", pers.Proxy.Port),
+                                new XElement("login", pers.Proxy.Login),
+                                new XElement("pwd", pers.Proxy.Pwd),
+                                new XElement("protocol_type", pers.Proxy.ProxyProtocol.ToString()));
+                    persona.Add(proxy);
+                }
+                doc.Root.Add(persona);
+            }
+
+            doc.Save(profilesFile);
         }
 
         public static int GetFreeLocalPort()
@@ -202,8 +245,9 @@ namespace Switch
                     string description = el.Element("description").Value;
                     string profilePath = el.Element("profile_path").Value;
                     string userAgent = el.Element("user_agent").Value;
+                    string hex = (el.Element("hex")!=null) ? el.Element("hex").Value:null;
 
-                    Persona pers = new Persona() { Title=title, Description = description, ProfilePath = profilePath, UserAgent = userAgent };
+                    Persona pers = new Persona() { Title=title, Description = description, ProfilePath = profilePath, UserAgent = userAgent, HashString=hex };
 
                     if(el.Element("proxy")!=null)
                     {

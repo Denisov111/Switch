@@ -33,10 +33,11 @@ namespace Switch
         #region Fields
 
         Persona persona;
-        bool isUseProxy;
+        //bool isUseProxy;
         ObservableCollection<Proxy> proxies;
         Proxy proxy;
         BitmapImage avatar;
+        string hashString;
 
         #endregion
 
@@ -53,15 +54,15 @@ namespace Switch
             }
         }
 
-        public bool IsUseProxy
-        {
-            get { return isUseProxy; }
-            set
-            {
-                isUseProxy = value;
-                OnPropertyChanged();
-            }
-        }
+        //public bool IsUseProxy
+        //{
+        //    get { return isUseProxy; }
+        //    set
+        //    {
+        //        isUseProxy = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
         public ObservableCollection<Proxy> Proxies
         {
@@ -93,6 +94,16 @@ namespace Switch
             }
         }
 
+        public string HashString
+        {
+            get { return hashString; }
+            set
+            {
+                hashString = value;
+                OnPropertyChanged();
+            }
+        }
+
         #endregion
 
         #endregion
@@ -102,9 +113,10 @@ namespace Switch
         public AddProfiler(Global global)
         {
             persona = new Persona();
-            
+
             this.global = global;
             addProfileViewModel = new ViewModels.AddProfileViewModel(this, global);
+            UpdateAvatar();
             view = new Views.AddProfile(addProfileViewModel);
             Proxies = global.Proxies;
             view.ShowDialog();
@@ -116,6 +128,11 @@ namespace Switch
             this.persona = persona;
             this.global = global;
             addProfileViewModel = new ViewModels.AddProfileViewModel(this, global);
+
+            HashString = persona.HashString;
+            Bitmap avaBitmap = AvatarGen.GenerateAvatar(HashString);
+            Avatar = GetBitmapImage(avaBitmap);
+
             view = new Views.AddProfile(addProfileViewModel);
             Proxies = global.Proxies;
 
@@ -153,21 +170,26 @@ namespace Switch
 
         private void UpdateAvatar()
         {
-            string salt = AvatarGen.RandomString(40);
-            string hex = AvatarGen.GenerateHash(salt);
-            Bitmap avaBitmap = AvatarGen.GenerateAvatar(hex);
+            HashString = AvatarGen.GenerateHash();
+            Bitmap avaBitmap = AvatarGen.GenerateAvatar(HashString);
+            Avatar = GetBitmapImage(avaBitmap);
+            
+        }
 
+        private BitmapImage GetBitmapImage(Bitmap avaBitmap)
+        {
+            BitmapImage bitmapImage = new BitmapImage();
             using (MemoryStream memory = new MemoryStream())
             {
                 avaBitmap.Save(memory, ImageFormat.Png);
                 memory.Position = 0;
-                BitmapImage bitmapImage = new BitmapImage();
+                
                 bitmapImage.BeginInit();
                 bitmapImage.StreamSource = memory;
                 bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                 bitmapImage.EndInit();
-                Avatar = bitmapImage;
             }
+            return bitmapImage;
         }
 
         private void DelProxyFromProfile()
@@ -179,8 +201,9 @@ namespace Switch
         {
             if(ProfilerMode == ProfilerMode.Add)
             {
-                if (isUseProxy) Persona.Proxy = Proxy;
+                Persona.Proxy = Proxy;
                 Persona.ProfilePath = Path.GetRandomFileName();
+                Persona.HashString = HashString;
                 global.Persons.Add(Persona);
                 SavePersons();
                 view.Close();
@@ -195,7 +218,7 @@ namespace Switch
             
         }
 
-        private void SavePersons()
+        public void SavePersons()
         {
             string profilesFile = @"profiles.xml";
             XDocument doc = new XDocument();
@@ -208,7 +231,8 @@ namespace Switch
                                 new XElement("title", pers.Title),
                                 new XElement("description", pers.Description),
                                 new XElement("profile_path", pers.ProfilePath),
-                                new XElement("user_agent", pers.UserAgent));
+                                new XElement("user_agent", pers.UserAgent),
+                                new XElement("hex", pers.HashString));
 
                 if(pers.Proxy!=null)
                 {

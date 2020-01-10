@@ -27,15 +27,15 @@ namespace Switch.ViewModels
             }
         }
 
-        public bool IsUseProxy
-        {
-            get { return addProfiler.IsUseProxy; }
-            set
-            {
-                addProfiler.IsUseProxy = value;
-                OnPropertyChanged();
-            }
-        }
+        //public bool IsUseProxy
+        //{
+        //    get { return addProfiler.IsUseProxy; }
+        //    set
+        //    {
+        //        addProfiler.IsUseProxy = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
         public ObservableCollection<Proxy> Proxies
         {

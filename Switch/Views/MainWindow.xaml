@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Switch.Views"
                       xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
         Title="Switch" Height="450" Width="750"
                       WindowStartupLocation="CenterScreen">
@@ -28,9 +29,13 @@
             </DataTemplate>-->
 
             <DataTemplate x:Key="OpenProfileButton">
-                <Button Content="Открыть" CommandParameter="{Binding ProfilePath}" 
+                <Button CommandParameter="{Binding ProfilePath}" 
                         Style="{StaticResource AccentedSquareButtonStyle}" 
-                        Command="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=DataContext.Context.OpenProfileCommand}"/>
+                        Command="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=DataContext.Context.OpenProfileCommand}">
+                    <iconPacks:PackIconIonicons Kind="PlayMD" 
+                                                Width="14"
+                           Height="14"/>
+                </Button>
             </DataTemplate>
 
             <DataTemplate x:Key="CheckProxyButton">
@@ -40,9 +45,23 @@
             </DataTemplate>
 
             <DataTemplate x:Key="EditButton">
-                <Button Content="Изменить" CommandParameter="{Binding ProfilePath}" 
+                <Button CommandParameter="{Binding ProfilePath}" 
                         Style="{StaticResource AccentedSquareButtonStyle}" 
-                        Command="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=DataContext.Context.EditProfileCommand}"/>
+                        Command="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=DataContext.Context.EditProfileCommand}">
+                    <iconPacks:PackIconTypicons Kind="Edit" 
+                                                Width="14" Height="14"/>
+                </Button>
+            </DataTemplate>
+
+            <DataTemplate x:Key="DelProfileButton">
+                <Button CommandParameter="{Binding ProfilePath}" 
+                        Style="{StaticResource AccentedSquareButtonStyle}" 
+                        Command="{Binding RelativeSource={RelativeSource AncestorType=DataGrid}, Path=DataContext.Context.DelProfileCommand}">
+                    <iconPacks:PackIconIonicons Kind="CloseMD" 
+                                                Width="14" Height="14"/>
+                </Button>
+
+
             </DataTemplate>
 
         </Grid.Resources>
@@ -66,6 +85,7 @@
                         <DataGridTemplateColumn Header="" DisplayIndex="3" CellTemplate="{StaticResource OpenProfileButton}"/>
                         <DataGridTemplateColumn Header="" DisplayIndex="4" CellTemplate="{StaticResource CheckProxyButton}"/>
                         <DataGridTemplateColumn Header="" DisplayIndex="5" CellTemplate="{StaticResource EditButton}"/>
+                        <DataGridTemplateColumn Header="" DisplayIndex="6" CellTemplate="{StaticResource DelProfileButton}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>

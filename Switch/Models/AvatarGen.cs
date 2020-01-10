@@ -10,10 +10,12 @@ namespace Switch
 {
     class AvatarGen
     {
-        public static string GenerateHash(string soul)
+        public static string GenerateHash()
         {
+            string salt = AvatarGen.RandomString(40);
+
             int unixTime = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-            string name = unixTime.ToString() + soul;
+            string name = unixTime.ToString() + salt;
             var message = Encoding.ASCII.GetBytes(name + Convert.ToString(DateTime.UtcNow)); // уникальная строка
             SHA256Managed hashString = new SHA256Managed();
             string hex = "";
