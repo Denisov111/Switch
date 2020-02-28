@@ -66,6 +66,23 @@ namespace UsefulThings
                 OnPropertyChanged();
             }
         }
+        public bool IsGoodVKAccess
+        {
+            get { return isGoodVKAccess; }
+            set
+            {
+                isGoodVKAccess = value;
+                OnPropertyChanged("IsGoodVKAccess");
+                OnPropertyChanged("IsGoodVKAccessView");
+            }
+        }
+        public string IsGoodVKAccessView
+        {
+            get
+            {
+                return (IsGoodVKAccess) ? "есть" : "нет";
+            }
+        }
         public static string OwnIP { get; set; }
         public static Dictionary<string, bool> Revealingheader { get; set; }
         public string Url
