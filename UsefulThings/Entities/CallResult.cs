@@ -21,4 +21,16 @@ namespace UsefulThings
         /// </summary>
         public bool Success => Error == null;
     }
+
+    public class CallResult
+    {
+        /// <summary>
+        /// An error if the call didn't succeed
+        /// </summary>
+        public Error Error { get; set; }
+        /// <summary>
+        /// Whether the call was successful
+        /// </summary>
+        public bool Success => Error == null;
+    }
 }

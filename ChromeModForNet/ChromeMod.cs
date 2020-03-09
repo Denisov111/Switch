@@ -162,6 +162,115 @@ namespace ChromeModForNet
             return chromeSessionResult;
         }
 
+        async public Task<CallResult<IChromeSession>> GetChromeSession(Proxy proxy, string ua, bool isDebug = false, bool headless = true, string profilePath = null)
+        {
+            L.Trace();
+            CallResult<IChromeSession> chromeSessionResult = new CallResult<IChromeSession>();
+
+            this.isDebug = isDebug;
+            var chromeProcessFactory = new ChromeProcessFactory(new StubbornDirectoryCleaner());
+            port = GetFreeLocalPort();
+
+            try
+            {
+                if (proxy != null)
+                {
+                    string ipPort = proxy.Ip + ":" + proxy.Port;
+                    chromeProcess = chromeProcessFactory.Create(port, headless, ipPort, profilePath, proxy.ProxyProtocol.ToString().ToLower());
+                }
+                else
+                {
+                    chromeProcess = chromeProcessFactory.Create(port, headless, null, profilePath, proxy.ProxyProtocol.ToString().ToLower());
+                }
+
+                var sessionInfoArray = await chromeProcess.GetSessionInfo();
+                var sessionInfo = sessionInfoArray.LastOrDefault();
+
+                var chromeSessionFactory = new ChromeSessionFactory();
+                chromeSession = chromeSessionFactory.Create(sessionInfo.WebSocketDebuggerUrl);
+
+                chromeSession.Subscribe<RequestPausedEvent>(requestPausedEvent =>
+                {
+                    RequestPausedEventHandler(requestPausedEvent);
+                });
+
+                chromeSession.Subscribe<AuthRequiredEvent>(authRequiredEvent =>
+                {
+                    AuthRequiredEventHandler(authRequiredEvent);
+                });
+
+                chromeSession.Subscribe<FrameNavigatedEvent>(frameNavigatedEvent =>
+                {
+                    FrameNavigatedEventHandler(frameNavigatedEvent);
+                });
+
+                chromeSession.Subscribe<LoadingFinishedEvent>(loadingFinishedEvent =>
+                {
+                    LoadingFinishedEventHandler(loadingFinishedEvent);
+                });
+                /*
+                await chromeSession.SendAsync(new SetDeviceMetricsOverrideCommand
+                {
+                    Width = GlobalVars.ViewPortWidth,
+                    Height = GlobalVars.ViewPortHeight,
+                    Scale = 1
+                });*/
+                /*
+                //Target.setDiscoverTargets
+                var setDiscoverTargetsResult = await chromeSession.SendAsync(new Chrome.Target.SetDiscoverTargetsCommand
+                {
+                    Discover=true
+                });
+                //Target.createTarget
+                var createTargetResult = await chromeSession.SendAsync(new Chrome.Target.CreateTargetCommand
+                {
+                    Url= "about:blank"
+                });
+                string targetId = createTargetResult.Result.TargetId;
+                //Target.attachToTarget
+                var attachToTargetResult = await chromeSession.SendAsync(new Chrome.Target.AttachToTargetCommand
+                {
+                    TargetId = targetId,
+                    Flatten=true
+
+                });
+                string sessionId = attachToTargetResult.Result.SessionId;
+                chromeSession.MainSessionId = sessionId;*/
+                //enable page
+                var pageEnableResult = await chromeSession.SendAsync<Chrome.Page.EnableCommand>();
+                //Page.getFrameTree
+                var getFrameTreeResult = await chromeSession.SendAsync<Chrome.Page.GetFrameTreeCommand>();
+                //Target.setAutoAttach
+                var setAutoAttachResult = await chromeSession.SendAsync(new Chrome.Target.SetAutoAttachCommand
+                {
+                    AutoAttach = true,
+                    WaitForDebuggerOnStart = false,
+                    Flatten = true
+
+                });
+                //Performance.enable
+                var performanceEnableResult = await chromeSession.SendAsync<Chrome.Performance.EnableCommand>();
+                //enable network
+                var enableNetwork = await chromeSession.SendAsync(new Chrome.Network.EnableCommand());
+            }
+            catch (Exception ex)
+            {
+                chromeSessionResult.Error = new UsefulThings.Error(ex.Message);
+                return chromeSessionResult;
+            }
+            await Task.Delay(1000);
+
+            //proxy auth
+            if (proxy != null && proxy.ProxyProtocol==ProxyProtocol.HTTP)
+            {
+                if (!String.IsNullOrWhiteSpace(proxy.Login)) await ProxyAuthenticate(proxy.Login, proxy.Pwd);
+            }
+
+            await SetUA(ua);
+            chromeSessionResult.Data = chromeSession;
+            return chromeSessionResult;
+        }
+
         /// <summary>
         /// Для присоединения к хрому без запуска процесса
         /// </summary>
