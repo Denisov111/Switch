@@ -30,6 +30,11 @@ namespace UsefulThings
             Message = message;
         }
 
+        public Error(Exception ex)
+        {
+            Message = ex.Message + "\n\n" + ex.StackTrace;
+        }
+
         public override string ToString()
         {
             return $"{Code}: {Message}";

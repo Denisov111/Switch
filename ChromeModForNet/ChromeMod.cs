@@ -180,7 +180,7 @@ namespace ChromeModForNet
                 }
                 else
                 {
-                    chromeProcess = chromeProcessFactory.Create(port, headless, null, profilePath, proxy.ProxyProtocol.ToString().ToLower());
+                    chromeProcess = chromeProcessFactory.Create(port, headless, null, profilePath);
                 }
 
                 var sessionInfoArray = await chromeProcess.GetSessionInfo();
@@ -422,7 +422,7 @@ namespace ChromeModForNet
 
         async public Task<CommandResponse> SetUA(string ua)
         {
-            if (ua == null) ua = Settings.UseragentOverride;
+            if (String.IsNullOrWhiteSpace(ua)) ua = Settings.UseragentOverride;
             var setUserAgentOverrideCommandResponse = await chromeSession.SendAsync(new SetUserAgentOverrideCommand
             {
                 UserAgent = ua
