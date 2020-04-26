@@ -24,6 +24,7 @@ namespace Switch
         string delAllProxy = "Удалить все прокси";
         string checkAllProxyLang = "Проверить все прокси";
         //string createProfileLang;
+
         //string proxySettingsLang;
 
 
