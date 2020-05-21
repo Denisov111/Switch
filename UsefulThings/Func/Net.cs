@@ -454,5 +454,78 @@ namespace UsefulThings
         //    L.LW("Что-то пошло не так, VK не отвечает\n");
         //    return null;
         //}
+
+        async public static Task<string> RespPostAsync(string request_path, string parameters, Proxy proxy)
+        {
+            if (proxy == null)
+            {
+                string response = string.Empty;
+                for (int i = 0; i <= 5; i++)
+                {
+                    int k = i + 1;
+                    L.LW("Отправляем запрос на сервер ВК(" + k.ToString() + ")");
+                    try
+                    {
+                        //Отправляем данные на сервер
+                        byte[] b = Encoding.UTF8.GetBytes(parameters);
+
+                        HttpWebRequest myReq = (HttpWebRequest)WebRequest.Create(request_path);
+                        myReq.Timeout = 15000;
+                        myReq.Method = "POST";
+                        myReq.ContentType = "application/x-www-form-urlencoded";
+                        myReq.ContentLength = b.Length;
+                        myReq.GetRequestStream().Write(b, 0, b.Length);
+
+                        WebResponse Response = await myReq.GetResponseAsync();
+                        StreamReader myStream = new StreamReader(Response.GetResponseStream(), Encoding.UTF8);
+                        response = myStream.ReadToEnd();
+                        Response.Close();
+
+                        return response;
+                    }
+                    catch
+                    {
+                        await Task.Delay(500);
+                    }
+                }
+                L.LW("Что-то пошло не так, VK не отвечает\n");
+                return null;
+            }
+            else
+            {
+                string response = string.Empty;
+                for (int i = 0; i <= 5; i++)
+                {
+                    int k = i + 1;
+                    L.LW("Отправляем запрос на сервер ВК(" + k.ToString() + ")");
+                    try
+                    {
+                        HttpRequest request = new HttpRequest();
+                        Proxy.MakeClient(request, proxy);
+
+                        byte[] b = Encoding.UTF8.GetBytes(parameters);
+                        string content = "";
+                        await Task.Run(() => content = request.Post(request_path, parameters, "application/x-www-form-urlencoded").ToString());
+                        //string content = request.Post(request_path, parameters, "application/x-www-form-urlencoded").ToString();
+                        if (content == "")
+                        {
+                            await Task.Delay(500);
+                            continue;
+                        }
+
+                        return content;
+                    }
+                    catch
+                    {
+                        await Task.Delay(500);
+                        Console.WriteLine("Вызвано исключение в методе Resp_POST");
+                    }
+                }
+                L.LW("Что-то пошло не так, VK не отвечает\n");
+                return null;
+            }
+        }
+
+        
     }
 }

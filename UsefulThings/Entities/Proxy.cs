@@ -9,6 +9,7 @@ using System.IO;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using xNet.Net;
 
 namespace UsefulThings
 {
@@ -23,7 +24,9 @@ namespace UsefulThings
     public enum ProxyProtocol
     {
         HTTP,
-        SOCKS5
+        SOCKS5, 
+        SOCKS4,
+        SOCKS4A
     }
 
     public enum ProxyWorkStatus
@@ -235,6 +238,33 @@ namespace UsefulThings
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+
+        public static void MakeClient(xNet.Net.HttpRequest request, Proxy proxy)
+        {
+
+            ProxyType proxyType = ProxyType.Http;
+            switch (proxy.ProxyProtocol)
+            {
+                case ProxyProtocol.HTTP:
+                    proxyType = ProxyType.Http;
+                    break;
+                case ProxyProtocol.SOCKS5:
+                    proxyType = ProxyType.Socks5;
+                    break;
+                case ProxyProtocol.SOCKS4:
+                    proxyType = ProxyType.Socks4;
+                    break;
+                case ProxyProtocol.SOCKS4A:
+                    proxyType = ProxyType.Socks4a;
+                    break;
+                default:
+                    System.Windows.MessageBox.Show("Не установлен тип прокси.");
+                    return;
+            }
+            //устанавливаем прокси
+            ProxyClient Client = ProxyHelper.CreateProxyClient(proxyType, proxy.Ip, Convert.ToInt32(proxy.Port), proxy.Login, proxy.Pwd);
+            request.Proxy = Client;
         }
     }
 }
